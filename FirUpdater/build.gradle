@@ -1,11 +1,10 @@
-apply plugin: 'com.android.application'
+apply plugin: 'com.android.library'
 
 android {
     compileSdkVersion gradle.compileSdkVersion
     buildToolsVersion gradle.buildToolsVersion
 
     defaultConfig {
-        applicationId "com.sunfusheng.firupdater.sample"
         minSdkVersion gradle.minSdkVersion
         targetSdkVersion gradle.targetSdkVersion
         versionCode gradle.versionCode
@@ -23,14 +22,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'com.android.support:appcompat-v7:' + gradle.supportLibraryVersion
-    implementation 'com.android.support:design:' + gradle.supportLibraryVersion
-
-    implementation 'com.sunfusheng:GroupRecyclerViewAdapter:1.0.2'
-
-    implementation project(":FirUpdater")
 }

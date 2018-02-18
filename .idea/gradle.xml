@@ -8,6 +8,7 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/FirUpdater" />
             <option value="$PROJECT_DIR$/Sample" />
           </set>
         </option>

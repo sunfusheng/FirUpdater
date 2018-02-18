@@ -1,0 +1,8 @@
+<resources>
+
+    <dimen name="list_item_margin_left_right">16dp</dimen>
+    <dimen name="list_item_margin_top_bottom">14dp</dimen>
+    <dimen name="list_item_margin_top_bottom_small">12dp</dimen>
+    <dimen name="list_item_margin_top_bottom_smaller">10dp</dimen>
+
+</resources>
