@@ -19,6 +19,9 @@ public class FirUpdater implements FirDialog.OnClickDownloadDialogListener {
     private Context context;
     private FirDialog firDialog;
     private FirDownloader firDownloader;
+    private FirNotification firNotification;
+
+    private boolean isBackgroundDownload;
 
     public FirUpdater(Context context, String apiToken, String appId) {
         this.context = context;
@@ -46,17 +49,29 @@ public class FirUpdater implements FirDialog.OnClickDownloadDialogListener {
         String fileName = FirAppInfo.appName + "-V" + FirAppInfo.appVersionName + ".apk";
         String filePath = Environment.getExternalStorageDirectory() + File.separator + fileName;
 
+        firNotification = new FirNotification();
+        firNotification.createBuilder(context);
+        firNotification.setContentTitle("正在下载" + FirAppInfo.appName);
+
         firDownloader = new FirDownloader(context, FirAppInfo.appInstallUrl, filePath);
         firDownloader.setOnDownLoadListener(new FirDownloader.OnDownLoadListener() {
             @Override
             public void onProgress(int totalLength, int currLength, int progress) {
                 Log.d("--->", "progress: " + progress + " totalLength: " + totalLength + " currLength: " + currLength);
                 firDialog.showDownloadDialog(context, progress);
+
+                if (isBackgroundDownload) {
+                    firNotification.setContentText(progress + "%");
+                    firNotification.notifyNotification(progress);
+                }
             }
 
             @Override
             public void onSuccess() {
                 firDialog.dismissDownloadDialog();
+                if (isBackgroundDownload) {
+                    firNotification.cancel();
+                }
                 FirUpdaterUtils.installApk(context, filePath);
             }
 
@@ -70,7 +85,7 @@ public class FirUpdater implements FirDialog.OnClickDownloadDialogListener {
 
     @Override
     public void onClickBackgroundDownload(DialogInterface dialog) {
-
+        isBackgroundDownload = true;
     }
 
     @Override

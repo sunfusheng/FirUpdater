@@ -11,7 +11,6 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.v4.content.FileProvider;
-import android.text.TextUtils;
 
 import java.io.Closeable;
 import java.io.File;
@@ -108,11 +107,7 @@ public class FirUpdaterUtils {
         return false;
     }
 
-    public static void installApk(Context context, String apkPath) {
-        if (TextUtils.isEmpty(apkPath)) {
-            return;
-        }
-
+    public static Intent getInstallApkIntent(Context context, String apkPath) {
         try {
             File apkFile = new File(apkPath);
             if (!apkFile.exists()) {
@@ -122,17 +117,22 @@ public class FirUpdaterUtils {
             Intent intent = new Intent(Intent.ACTION_VIEW);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             Uri apkUri;
-            if (Build.VERSION.SDK_INT >= 24) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 apkUri = FileProvider.getUriForFile(context, getPackageName(context) + ".file_provider", apkFile);
                 intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             } else {
                 apkUri = Uri.fromFile(apkFile);
             }
             intent.setDataAndType(apkUri, "application/vnd.android.package-archive");
-            context.startActivity(intent);
+            return intent;
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return null;
+    }
+
+    public static void installApk(Context context, String apkPath) {
+        context.startActivity(getInstallApkIntent(context, apkPath));
     }
 
     public static void closeQuietly(final Closeable... closeables) {

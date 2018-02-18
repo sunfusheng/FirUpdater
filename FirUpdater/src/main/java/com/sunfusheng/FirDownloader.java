@@ -34,6 +34,7 @@ public class FirDownloader {
     private volatile int currLength;//当前总共下载的大小
     private volatile int threadCountRunning;//正在运行的线程数
     private String stateDownload = DOWNLOAD_INIT;//当前线程状态
+    private FirNotification firNotification;
 
     private DownloadThread[] threadArr;
 
@@ -52,22 +53,13 @@ public class FirDownloader {
     }
 
     public FirDownloader(Context context, String loadUrl, String filePath) {
-        this(context, loadUrl, filePath, DEFAULT_THREAD_COUNT, null);
+        this(context, loadUrl, filePath, null);
     }
 
     public FirDownloader(Context context, String loadUrl, String filePath, OnDownLoadListener onDownLoadListener) {
-        this(context, loadUrl, filePath, DEFAULT_THREAD_COUNT, onDownLoadListener);
-    }
-
-    public FirDownloader(Context context, String loadUrl, String filePath, int threadCount) {
-        this(context, loadUrl, filePath, threadCount, null);
-    }
-
-    public FirDownloader(Context context, String loadUrl, String filePath, int threadCount, OnDownLoadListener onDownLoadListener) {
         this.context = context;
         this.loadUrl = loadUrl;
         this.filePath = filePath;
-        this.threadCount = threadCount;
         this.threadCountRunning = 0;
         this.onDownLoadListener = onDownLoadListener;
     }
