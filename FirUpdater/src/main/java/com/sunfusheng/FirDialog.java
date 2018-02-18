@@ -18,18 +18,6 @@ public class FirDialog {
 
     private OnClickDownloadDialogListener onClickDownloadDialogListener;
 
-    public void setOnClickDownloadDialogListener(OnClickDownloadDialogListener onClickDownloadDialogListener) {
-        this.onClickDownloadDialogListener = onClickDownloadDialogListener;
-    }
-
-    public interface OnClickDownloadDialogListener {
-        void onClickDownload(DialogInterface dialog);
-
-        void onClickBackgroundDownload(DialogInterface dialog);
-
-        void onClickCancelDownload(DialogInterface dialog);
-    }
-
     public void showAppInfoDialog(Context context, String title, String message) {
         AlertDialog alertDialog = new AlertDialog.Builder(context)
                 .setTitle(title + "更新提示")
@@ -47,13 +35,13 @@ public class FirDialog {
         alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.parseColor("#9a9a9a"));
 
         try {
-            Field mAlert = AlertDialog.class.getDeclaredField("mAlert");
-            mAlert.setAccessible(true);
-            Object mAlertController = mAlert.get(alertDialog);
-            Field mMessage = mAlertController.getClass().getDeclaredField("mMessageView");
-            mMessage.setAccessible(true);
-            TextView mMessageView = (TextView) mMessage.get(mAlertController);
-            mMessageView.setTextColor(Color.parseColor("#9a9a9a"));
+            Field alert = AlertDialog.class.getDeclaredField("mAlert");
+            alert.setAccessible(true);
+            Object alertController = alert.get(alertDialog);
+            Field messageView = alertController.getClass().getDeclaredField("mMessageView");
+            messageView.setAccessible(true);
+            TextView textView = (TextView) messageView.get(alertController);
+            textView.setTextColor(Color.parseColor("#9a9a9a"));
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         } catch (NoSuchFieldException e) {
@@ -89,6 +77,18 @@ public class FirDialog {
         if (progressDialog != null && progressDialog.isShowing()) {
             progressDialog.dismiss();
         }
+    }
+
+    public void setOnClickDownloadDialogListener(OnClickDownloadDialogListener onClickDownloadDialogListener) {
+        this.onClickDownloadDialogListener = onClickDownloadDialogListener;
+    }
+
+    public interface OnClickDownloadDialogListener {
+        void onClickDownload(DialogInterface dialog);
+
+        void onClickBackgroundDownload(DialogInterface dialog);
+
+        void onClickCancelDownload(DialogInterface dialog);
     }
 
 }

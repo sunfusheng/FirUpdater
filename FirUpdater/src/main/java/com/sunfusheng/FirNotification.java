@@ -25,8 +25,8 @@ public class FirNotification {
         builder.setSmallIcon(android.R.drawable.stat_sys_download);
         builder.setAutoCancel(false);
         builder.setOngoing(true);
-        builder.setShowWhen(false);
-        builder.setProgress(100, 7, false);
+        builder.setShowWhen(true);
+        builder.setProgress(100, 0, false);
         builder.setOngoing(true);
         builder.setShowWhen(false);
         builder.setDefaults(NotificationCompat.DEFAULT_ALL);

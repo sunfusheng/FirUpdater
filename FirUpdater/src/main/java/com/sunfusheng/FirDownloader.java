@@ -94,11 +94,11 @@ public class FirDownloader {
                         threadArr[i].start();
                     }
                 } else {
-                    handler.sendEmptyMessage(FAILURE);
+                    handler.sendEmptyMessage(ERROR);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                handler.sendEmptyMessage(FAILURE);
+                handler.sendEmptyMessage(ERROR);
             }
         }).start();
     }
@@ -206,12 +206,12 @@ public class FirDownloader {
                     }
                 } else {
                     sp.edit().clear().apply();
-                    handler.sendEmptyMessage(FAILURE);
+                    handler.sendEmptyMessage(ERROR);
                 }
             } catch (Exception e) {
                 sp.edit().clear().apply();
                 e.printStackTrace();
-                handler.sendEmptyMessage(FAILURE);
+                handler.sendEmptyMessage(ERROR);
             }
         }
 
@@ -220,23 +220,27 @@ public class FirDownloader {
         }
     }
 
-    private final int SUCCESS = 0x00000101;
-    private final int FAILURE = 0x00000102;
-    int lastProgress = 0;
+    private final int SUCCESS = 1000;
+    private final int ERROR = 1001;
+    private int lastProgress = 0;
 
     private Handler handler = new Handler(Looper.getMainLooper()) {
         @Override
         public void handleMessage(Message msg) {
             if (onDownLoadListener != null) {
-                if (msg.what == SUCCESS) {
-                    onDownLoadListener.onSuccess();
-                } else if (msg.what == FAILURE) {
-                    onDownLoadListener.onError();
-                } else {
-                    if (msg.what != lastProgress) {
-                        lastProgress = msg.what;
-                        onDownLoadListener.onProgress(msg.arg1, msg.arg2, msg.what);
-                    }
+                switch (msg.what) {
+                    case SUCCESS:
+                        onDownLoadListener.onSuccess();
+                        break;
+                    case ERROR:
+                        onDownLoadListener.onError();
+                        break;
+                    default:
+                        if (msg.what != lastProgress) {
+                            lastProgress = msg.what;
+                            onDownLoadListener.onProgress(msg.arg1, msg.arg2, msg.what);
+                        }
+                        break;
                 }
             }
         }

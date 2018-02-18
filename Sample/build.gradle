@@ -1,5 +1,8 @@
 apply plugin: 'com.android.application'
 
+Properties signingProperties = new Properties()
+signingProperties.load(new FileInputStream(file("../signings/signing.properties")))
+
 android {
     compileSdkVersion gradle.compileSdkVersion
     buildToolsVersion gradle.buildToolsVersion
@@ -17,10 +20,41 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
+    signingConfigs {
+        release {
+            storeFile file(signingProperties['KEYSTORE_FILEPATH'])
+            storePassword signingProperties['STORE_PASSWORD']
+            keyAlias signingProperties['KEY_ALIAS']
+            keyPassword signingProperties['KEY_PASSWORD']
+        }
+    }
+
     buildTypes {
         release {
-            minifyEnabled false
+            buildConfigField "boolean", "debugMode", "false"
+            signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            applicationVariants.all {
+                variant -> generateApk(variant)
+            }
+        }
+
+        debug {
+            buildConfigField "boolean", "debugMode", "true"
+            signingConfig signingConfigs.release
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            applicationVariants.all {
+                variant -> generateApk(variant)
+            }
+        }
+    }
+}
+
+def generateApk(variant) {
+    if (variant.buildType.name == "release") {
+        variant.getPackageApplication().outputDirectory = new File(project.rootDir.absolutePath + "/Sample/outputs")
+        variant.getPackageApplication().outputScope.apkDatas.forEach { apkData ->
+            apkData.outputFileName = "FirUpdater.apk"
         }
     }
 }
