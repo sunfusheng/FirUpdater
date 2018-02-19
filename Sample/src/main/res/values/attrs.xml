@@ -2,5 +2,11 @@
 <resources>
 
     <attr name="key_grva">key_grva</attr>
+    <attr name="key_360">key_360</attr>
+    <attr name="key_giv">key_giv</attr>
+    <attr name="key_gank">key_gank</attr>
+    <attr name="key_mv">key_mv</attr>
+    <attr name="key_shlv">key_shlv</attr>
+    <attr name="key_tuling">key_tuling</attr>
 
 </resources>

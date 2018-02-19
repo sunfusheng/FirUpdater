@@ -18,66 +18,53 @@ public class FirDownloader {
 
     private static final String SP_NAME = "download_file";
     private static final String CURR_LENGTH = "curr_length";
-    private static final int DEFAULT_THREAD_COUNT = 3;//默认下载线程数
-    //以下为线程状态
-    private static final String DOWNLOAD_INIT = "1";
-    private static final String DOWNLOAD_ING = "2";
-    private static final String DOWNLOAD_PAUSE = "3";
+    private static final int DEFAULT_THREAD_COUNT = 3;
+
+    private static final String STATE_INIT = "init";
+    private static final String STATE_DOWNLOADING = "downloading";
+    private static final String STATE_PAUSE = "pause";
+    private static final int STATE_SUCCESS = 1001;
+    private static final int STATE_ERROR = 1002;
 
     private Context context;
-
-    private String loadUrl;//网络获取的url
-    private String filePath;//下载到本地的path
-    private int threadCount = DEFAULT_THREAD_COUNT;//下载线程数
-
-    private int fileLength;//文件总大小
-    private volatile int currLength;//当前总共下载的大小
-    private volatile int threadCountRunning;//正在运行的线程数
-    private String stateDownload = DOWNLOAD_INIT;//当前线程状态
-    private FirNotification firNotification;
+    private String apkUrl;
+    private String apkPath;
+    private int fileLength;
+    private volatile int currLength;
 
     private DownloadThread[] threadArr;
+    private int threadCount = DEFAULT_THREAD_COUNT;
+    private volatile int threadCountRunning = 0;
+    private String downloadState = STATE_INIT;
 
+    private int lastProgress = 0;
     private OnDownLoadListener onDownLoadListener;
 
-    public void setOnDownLoadListener(OnDownLoadListener onDownLoadListener) {
-        this.onDownLoadListener = onDownLoadListener;
+    public FirDownloader(Context context, String apkUrl, String apkPath) {
+        this(context, apkUrl, apkPath, null);
     }
 
-    interface OnDownLoadListener {
-        void onProgress(int totalLength, int currLength, int progress);
-
-        void onSuccess();
-
-        void onError();
-    }
-
-    public FirDownloader(Context context, String loadUrl, String filePath) {
-        this(context, loadUrl, filePath, null);
-    }
-
-    public FirDownloader(Context context, String loadUrl, String filePath, OnDownLoadListener onDownLoadListener) {
+    public FirDownloader(Context context, String apkUrl, String apkPath, OnDownLoadListener onDownLoadListener) {
         this.context = context;
-        this.loadUrl = loadUrl;
-        this.filePath = filePath;
-        this.threadCountRunning = 0;
+        this.apkUrl = apkUrl;
+        this.apkPath = apkPath;
         this.onDownLoadListener = onDownLoadListener;
     }
 
-    protected void downLoad() {
+    public void downLoad() {
         new Thread(() -> {
             try {
                 if (threadArr == null) {
                     threadArr = new DownloadThread[threadCount];
                 }
 
-                URL url = new URL(loadUrl);
+                URL url = new URL(apkUrl);
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                conn.setConnectTimeout(5000);
+                conn.setConnectTimeout(10000);
                 conn.setRequestMethod("GET");
                 if (conn.getResponseCode() == HttpURLConnection.HTTP_OK) {
                     fileLength = conn.getContentLength();
-                    RandomAccessFile raf = new RandomAccessFile(filePath, "rwd");
+                    RandomAccessFile raf = new RandomAccessFile(apkPath, "rwd");
                     raf.setLength(fileLength);
                     raf.close();
                     int blockLength = fileLength / threadCount;
@@ -85,41 +72,42 @@ public class FirDownloader {
                     SharedPreferences sp = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
                     currLength = sp.getInt(CURR_LENGTH, 0);
                     for (int i = 0; i < threadCount; i++) {
-                        int startPosition = sp.getInt(SP_NAME + (i + 1), i * blockLength);
+                        int threadId = i + 1;
+                        int startPosition = sp.getInt(SP_NAME + threadId, i * blockLength);
                         int endPosition = (i + 1) * blockLength - 1;
-                        if ((i + 1) == threadCount)
-                            endPosition = endPosition * 2;
-
-                        threadArr[i] = new DownloadThread(i + 1, startPosition, endPosition);
+                        if (threadId == threadCount) {
+                            endPosition = fileLength;
+                        }
+                        threadArr[i] = new DownloadThread(threadId, startPosition, endPosition);
                         threadArr[i].start();
                     }
                 } else {
-                    handler.sendEmptyMessage(ERROR);
+                    handler.sendEmptyMessage(STATE_ERROR);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                handler.sendEmptyMessage(ERROR);
+                handler.sendEmptyMessage(STATE_ERROR);
             }
         }).start();
     }
 
-    protected void start() {
+    public void start() {
         if (threadArr != null)
-            synchronized (DOWNLOAD_PAUSE) {
-                stateDownload = DOWNLOAD_ING;
-                DOWNLOAD_PAUSE.notifyAll();
+            synchronized (STATE_PAUSE) {
+                downloadState = STATE_DOWNLOADING;
+                STATE_PAUSE.notifyAll();
             }
     }
 
-    protected void pause() {
+    public void pause() {
         if (threadArr != null) {
-            stateDownload = DOWNLOAD_PAUSE;
+            downloadState = STATE_PAUSE;
         }
     }
 
-    protected void cancel() {
+    public void cancel() {
         if (threadArr != null) {
-            if (stateDownload.equals(DOWNLOAD_PAUSE)) {
+            if (downloadState.equals(STATE_PAUSE)) {
                 start();
             }
 
@@ -129,7 +117,7 @@ public class FirDownloader {
         }
     }
 
-    protected void destroy() {
+    public void destroy() {
         if (threadArr != null) {
             threadArr = null;
         }
@@ -137,11 +125,11 @@ public class FirDownloader {
 
     private class DownloadThread extends Thread {
 
-        private boolean isGoOn = true;//是否继续下载
         private int threadId;
-        private int currPosition;//当前线程的下载进度
-        private int startPosition;//开始下载点
-        private int endPosition;//结束下载点
+        private boolean isGoOn = true;
+        private int currPosition;
+        private int startPosition;
+        private int endPosition;
 
         private DownloadThread(int threadId, int startPosition, int endPosition) {
             this.threadId = threadId;
@@ -155,14 +143,14 @@ public class FirDownloader {
         public void run() {
             SharedPreferences sp = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
             try {
-                URL url = new URL(loadUrl);
+                URL url = new URL(apkUrl);
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("GET");
                 conn.setRequestProperty("Range", "bytes=" + startPosition + "-" + endPosition);
                 conn.setConnectTimeout(5000);
                 if (conn.getResponseCode() == HttpURLConnection.HTTP_PARTIAL) {
                     InputStream is = conn.getInputStream();
-                    RandomAccessFile raf = new RandomAccessFile(filePath, "rwd");
+                    RandomAccessFile raf = new RandomAccessFile(apkPath, "rwd");
                     raf.seek(startPosition);
                     int len;
                     int lastProgress = 0;
@@ -174,17 +162,17 @@ public class FirDownloader {
                         if (onDownLoadListener != null) {
                             currLength += len;
                             int progress = (int) ((float) currLength / (float) fileLength * 100);
-                            if (progress != lastProgress) {
+                            if (lastProgress != progress) {
                                 lastProgress = progress;
-                                handler.sendMessage(handler.obtainMessage(progress, fileLength, currLength));
+                                handler.sendEmptyMessage(progress);
                             }
                         }
 
                         raf.write(buffer, 0, len);
                         currPosition += len;
-                        synchronized (DOWNLOAD_PAUSE) {
-                            if (stateDownload.equals(DOWNLOAD_PAUSE)) {
-                                DOWNLOAD_PAUSE.wait();
+                        synchronized (STATE_PAUSE) {
+                            if (downloadState.equals(STATE_PAUSE)) {
+                                STATE_PAUSE.wait();
                             }
                         }
                     }
@@ -200,18 +188,18 @@ public class FirDownloader {
                     }
                     if (threadCountRunning == 0) {
                         sp.edit().clear().apply();
-                        handler.sendMessage(handler.obtainMessage(100, fileLength, currLength));
-                        handler.sendEmptyMessage(SUCCESS);
+                        handler.sendEmptyMessage(100);
+                        handler.sendEmptyMessage(STATE_SUCCESS);
                         threadArr = null;
                     }
                 } else {
                     sp.edit().clear().apply();
-                    handler.sendEmptyMessage(ERROR);
+                    handler.sendEmptyMessage(STATE_ERROR);
                 }
             } catch (Exception e) {
                 sp.edit().clear().apply();
                 e.printStackTrace();
-                handler.sendEmptyMessage(ERROR);
+                handler.sendEmptyMessage(STATE_ERROR);
             }
         }
 
@@ -220,25 +208,34 @@ public class FirDownloader {
         }
     }
 
-    private final int SUCCESS = 1000;
-    private final int ERROR = 1001;
-    private int lastProgress = 0;
+    public void setOnDownLoadListener(OnDownLoadListener onDownLoadListener) {
+        this.onDownLoadListener = onDownLoadListener;
+    }
+
+    public interface OnDownLoadListener {
+        void onProgress(int progress);
+
+        void onSuccess();
+
+        void onError();
+    }
 
     private Handler handler = new Handler(Looper.getMainLooper()) {
         @Override
         public void handleMessage(Message msg) {
             if (onDownLoadListener != null) {
                 switch (msg.what) {
-                    case SUCCESS:
+                    case STATE_SUCCESS:
                         onDownLoadListener.onSuccess();
                         break;
-                    case ERROR:
+                    case STATE_ERROR:
                         onDownLoadListener.onError();
                         break;
                     default:
-                        if (msg.what != lastProgress) {
-                            lastProgress = msg.what;
-                            onDownLoadListener.onProgress(msg.arg1, msg.arg2, msg.what);
+                        int progress = msg.what;
+                        if (lastProgress != progress) {
+                            lastProgress = progress;
+                            onDownLoadListener.onProgress(progress);
                         }
                         break;
                 }

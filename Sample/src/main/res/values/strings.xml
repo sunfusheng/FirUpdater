@@ -3,6 +3,31 @@
     <string name="app_name">FirUpdater</string>
 
     <string name="grva_title">GroupRecyclerViewAdapter</string>
-    <string name="grva_subtitle">分组列表</string>
+    <string name="grva_subtitle">可增删改查、可展开收起的分组列表</string>
+    <string name="grva_app_id">5a80151e959d6949f2ecb2e8</string>
+
+    <string name="_360_title">全景图</string>
+    <string name="_360_subtitle">360°全景图是一个值得把玩的应用</string>
+    <string name="_360_app_id">59a52a7d959d69410b00060d</string>
+
+    <string name="giv_title">GlideImageView</string>
+    <string name="giv_subtitle">基于Glide V4.X封装的可显示加载网络图片进度的图片库</string>
+    <string name="giv_app_id">59461f4c548b7a45cb000050</string>
+
+    <string name="gank_title">Gank.IO</string>
+    <string name="gank_subtitle">干货集中营的Android客户端</string>
+    <string name="gank_app_id">58954512ca87a85dc4000135</string>
+
+    <string name="mv_title">MarqueeView</string>
+    <string name="mv_subtitle">可垂直翻、可水平翻的翻页公告</string>
+    <string name="mv_app_id">574e8c15f2fc427ab1000009</string>
+
+    <string name="shlv_title">StickyHeaderListView</string>
+    <string name="shlv_subtitle">可渐变、可悬浮、可筛选、可排序灵活可定制的ListView</string>
+    <string name="shlv_app_id">571dd00b00fc74312e00001f</string>
+
+    <string name="tuling_title">Tuling</string>
+    <string name="tuling_subtitle">图灵机器人，一起和它玩耍吧</string>
+    <string name="tuling_app_id">5704953c00fc74127000000a</string>
 
 </resources>

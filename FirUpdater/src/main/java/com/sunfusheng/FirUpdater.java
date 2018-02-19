@@ -3,6 +3,7 @@ package com.sunfusheng;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Environment;
+import android.text.TextUtils;
 
 import java.io.File;
 
@@ -15,6 +16,8 @@ public class FirUpdater {
     private String appVersionUrl;
 
     private FirAppInfo.AppInfo appInfo;
+    private String apkName;
+    private String apkPath;
     private boolean isBackgroundDownload;
     private boolean forceShowDialog;
 
@@ -32,6 +35,15 @@ public class FirUpdater {
         return this;
     }
 
+    public FirUpdater setApkName(String apkName) {
+        this.apkName = apkName;
+        return this;
+    }
+
+    public FirUpdater setApkPath(String apkPath) {
+        this.apkPath = apkPath;
+        return this;
+    }
 
     public void checkVersion() {
         new Thread(() -> {
@@ -68,19 +80,22 @@ public class FirUpdater {
     }
 
     private void downloadApk() {
-        String fileName = appInfo.appName + "-V" + appInfo.appVersionName + ".apk";
-        String filePath = Environment.getExternalStorageDirectory() + File.separator + fileName;
+        if (TextUtils.isEmpty(apkName)) {
+            apkName = appInfo.appName + "-V" + appInfo.appVersionName + ".apk";
+        }
+        if (TextUtils.isEmpty(apkPath)) {
+            apkPath = Environment.getExternalStorageDirectory() + File.separator + apkName;
+        }
 
         firNotification = new FirNotification();
         firNotification.createBuilder(context);
         firNotification.setContentTitle("正在下载" + appInfo.appName);
 
-        firDownloader = new FirDownloader(context, appInfo.appInstallUrl, filePath);
+        firDownloader = new FirDownloader(context, appInfo.appInstallUrl, apkPath);
         firDownloader.setOnDownLoadListener(new FirDownloader.OnDownLoadListener() {
             @Override
-            public void onProgress(int totalLength, int currLength, int progress) {
+            public void onProgress(int progress) {
                 firDialog.showDownloadDialog(context, progress);
-
                 if (isBackgroundDownload) {
                     firNotification.setContentText(progress + "%");
                     firNotification.notifyNotification(progress);
@@ -93,7 +108,7 @@ public class FirUpdater {
                 if (isBackgroundDownload) {
                     firNotification.cancel();
                 }
-                FirUpdaterUtils.installApk(context, filePath);
+                FirUpdaterUtils.installApk(context, apkPath);
             }
 
             @Override
@@ -104,4 +119,11 @@ public class FirUpdater {
         firDownloader.downLoad();
     }
 
+    public FirDialog getFirDialog() {
+        return firDialog;
+    }
+
+    public FirNotification getFirNotification() {
+        return firNotification;
+    }
 }

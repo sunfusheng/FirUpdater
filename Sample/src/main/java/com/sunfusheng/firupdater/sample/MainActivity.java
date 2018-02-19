@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
 
-            new FirUpdater(this, DataSource.API_TOKEN, config.appId)
+            new FirUpdater(this, DataSource.API_TOKEN, getString(config.appId))
                     .enableForceShowDialog(true)
                     .checkVersion();
         });

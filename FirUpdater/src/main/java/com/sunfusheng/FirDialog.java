@@ -14,38 +14,41 @@ import java.lang.reflect.Field;
  */
 public class FirDialog {
 
+    private AlertDialog alertDialog;
     private ProgressDialog progressDialog;
 
     private OnClickDownloadDialogListener onClickDownloadDialogListener;
 
     public void showAppInfoDialog(Context context, String title, String message) {
-        AlertDialog alertDialog = new AlertDialog.Builder(context)
-                .setTitle(title + "更新提示")
-                .setMessage(message)
-                .setPositiveButton("立即更新", (dialog, which) -> {
-                    if (onClickDownloadDialogListener != null) {
-                        onClickDownloadDialogListener.onClickDownload(dialog);
-                    }
-                })
-                .setNegativeButton("稍后", (dialog, which) -> {
-                })
-                .create();
-        alertDialog.show();
-        alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.parseColor("#333333"));
-        alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.parseColor("#9a9a9a"));
+        if (alertDialog == null) {
+            alertDialog = new AlertDialog.Builder(context)
+                    .setTitle(title + "更新提示")
+                    .setMessage(message)
+                    .setPositiveButton("立即更新", (dialog, which) -> {
+                        if (onClickDownloadDialogListener != null) {
+                            onClickDownloadDialogListener.onClickDownload(dialog);
+                        }
+                    })
+                    .setNegativeButton("稍后", (dialog, which) -> {
+                    })
+                    .create();
+            alertDialog.show();
+            alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.parseColor("#333333"));
+            alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.parseColor("#9a9a9a"));
 
-        try {
-            Field alert = AlertDialog.class.getDeclaredField("mAlert");
-            alert.setAccessible(true);
-            Object alertController = alert.get(alertDialog);
-            Field messageView = alertController.getClass().getDeclaredField("mMessageView");
-            messageView.setAccessible(true);
-            TextView textView = (TextView) messageView.get(alertController);
-            textView.setTextColor(Color.parseColor("#9a9a9a"));
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (NoSuchFieldException e) {
-            e.printStackTrace();
+            try {
+                Field alert = AlertDialog.class.getDeclaredField("mAlert");
+                alert.setAccessible(true);
+                Object alertController = alert.get(alertDialog);
+                Field messageView = alertController.getClass().getDeclaredField("mMessageView");
+                messageView.setAccessible(true);
+                TextView textView = (TextView) messageView.get(alertController);
+                textView.setTextColor(Color.parseColor("#9a9a9a"));
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            } catch (NoSuchFieldException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -53,6 +56,8 @@ public class FirDialog {
         if (progressDialog == null) {
             progressDialog = new ProgressDialog(context);
             progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+            progressDialog.setCancelable(false);
+            progressDialog.setCanceledOnTouchOutside(false);
             progressDialog.setMax(100);
             progressDialog.setTitle("正在下载");
             progressDialog.setButton(DialogInterface.BUTTON_POSITIVE, "后台下载", (dialog, which) -> {
