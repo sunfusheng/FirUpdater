@@ -48,19 +48,20 @@ public class FirUpdater {
     public void checkVersion() {
         new Thread(() -> {
             appInfo = new FirAppInfo().requestAppInfo(appVersionUrl);
-            boolean needUpdate = appInfo.appVersionCode > FirUpdaterUtils.getVersionCode(context);
+            if (appInfo == null) {
+                return;
+            }
 
-            FirUpdaterUtils.runOnMainThread(() -> {
-                if (appInfo != null && (forceShowDialog || needUpdate)) {
-                    initFirDialog();
-                }
-            });
+            boolean needUpdate = appInfo.appVersionCode > FirUpdaterUtils.getVersionCode(context);
+            if (forceShowDialog || needUpdate) {
+                FirUpdaterUtils.runOnMainThread(this::initFirDialog);
+            }
         }).start();
     }
 
     private void initFirDialog() {
         firDialog = new FirDialog();
-        firDialog.showAppInfoDialog(context, appInfo.appName, appInfo.appChangeLog);
+        firDialog.showAppInfoDialog(context, appInfo);
         firDialog.setOnClickDownloadDialogListener(new FirDialog.OnClickDownloadDialogListener() {
             @Override
             public void onClickDownload(DialogInterface dialog) {

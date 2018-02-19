@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.support.v7.app.AlertDialog;
+import android.text.TextUtils;
 import android.widget.TextView;
 
 import java.lang.reflect.Field;
@@ -19,11 +20,20 @@ public class FirDialog {
 
     private OnClickDownloadDialogListener onClickDownloadDialogListener;
 
-    public void showAppInfoDialog(Context context, String title, String message) {
+    public void showAppInfoDialog(Context context, FirAppInfo.AppInfo appInfo) {
         if (alertDialog == null) {
+            StringBuilder sb = new StringBuilder();
+            sb.append("名称：").append(appInfo.appName);
+            sb.append("\n版本：").append(appInfo.appVersionName);
+            sb.append("\n文件大小：").append(FirUpdaterUtils.getMeasureSize(appInfo.appSize));
+            if (!TextUtils.isEmpty(appInfo.appChangeLog)) {
+                sb.append("\n\n更新日志：").append(appInfo.appChangeLog);
+            }
+
             alertDialog = new AlertDialog.Builder(context)
-                    .setTitle(title + "更新提示")
-                    .setMessage(message)
+                    .setCancelable(false)
+                    .setTitle("应用更新提示")
+                    .setMessage(sb)
                     .setPositiveButton("立即更新", (dialog, which) -> {
                         if (onClickDownloadDialogListener != null) {
                             onClickDownloadDialogListener.onClickDownload(dialog);
@@ -33,6 +43,7 @@ public class FirDialog {
                     })
                     .create();
             alertDialog.show();
+
             alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.parseColor("#333333"));
             alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.parseColor("#9a9a9a"));
 
@@ -43,6 +54,7 @@ public class FirDialog {
                 Field messageView = alertController.getClass().getDeclaredField("mMessageView");
                 messageView.setAccessible(true);
                 TextView textView = (TextView) messageView.get(alertController);
+                textView.setTextSize(12);
                 textView.setTextColor(Color.parseColor("#9a9a9a"));
             } catch (IllegalAccessException e) {
                 e.printStackTrace();

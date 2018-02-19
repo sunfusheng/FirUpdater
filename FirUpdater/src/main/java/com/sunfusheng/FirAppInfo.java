@@ -82,7 +82,7 @@ public class FirAppInfo {
             if (!TextUtils.isEmpty(versionCode)) {
                 appInfo.appVersionCode = Integer.parseInt(versionCode);
             }
-            appInfo.appVersionName = object.getString("versionShort");
+            appInfo.appVersionName = "V"+object.getString("versionShort");
             appInfo.appChangeLog = object.getString("changelog");
             appInfo.appInstallUrl = object.getString("installUrl");
             if (object.has("binary")) {
