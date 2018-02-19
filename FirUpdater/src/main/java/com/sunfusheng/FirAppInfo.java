@@ -1,5 +1,6 @@
 package com.sunfusheng;
 
+import android.text.TextUtils;
 import android.util.Log;
 
 import org.json.JSONException;
@@ -17,16 +18,7 @@ public class FirAppInfo {
 
     private static final String TAG = "FirAppInfo";
 
-    public static int TIME_OUT_MS = 10000;
-
-    public static String appName;
-    public static String appVersionCode;
-    public static String appVersionName;
-    public static String appChangeLog;
-    public static String appInstallUrl;
-    public static long appSize;
-
-    public boolean requestAppInfo(String url) {
+    public AppInfo requestAppInfo(String url) {
         Log.d(TAG, url);
         BufferedReader in = null;
         HttpURLConnection conn = null;
@@ -35,8 +27,8 @@ public class FirAppInfo {
             conn.setRequestMethod("GET");
             conn.setDoOutput(false);
             conn.setDoInput(true);
-            conn.setConnectTimeout(TIME_OUT_MS);
-            conn.setReadTimeout(TIME_OUT_MS);
+            conn.setConnectTimeout(10000);
+            conn.setReadTimeout(10000);
             conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
             conn.connect();
             if (conn.getResponseCode() == HttpURLConnection.HTTP_OK) {
@@ -56,34 +48,55 @@ public class FirAppInfo {
                 conn.disconnect();
             }
         }
-        return false;
+        return null;
     }
 
-    private boolean parseResult(String result) {
+    public class AppInfo {
+        public String appName;
+        public int appVersionCode;
+        public String appVersionName;
+        public String appChangeLog;
+        public String appInstallUrl;
+        public long appSize;
+
+        @Override
+        public String toString() {
+            return "AppInfo{" +
+                    "\nappName='" + appName +
+                    "\nappVersionCode=" + appVersionCode +
+                    "\nappVersionName='" + appVersionName +
+                    "\nappChangeLog='" + appChangeLog +
+                    "\nappInstallUrl='" + appInstallUrl +
+                    "\nappSize=" + appSize +
+                    "\n}";
+        }
+    }
+
+    private AppInfo parseResult(String result) {
         try {
             JSONObject object = new JSONObject(result);
-            appName = object.getString("name");
-            appVersionCode = object.getString("version");
-            appVersionName = object.getString("versionShort");
-            appChangeLog = object.getString("changelog");
-            appInstallUrl = object.getString("installUrl");
+            AppInfo appInfo = new AppInfo();
+
+            appInfo.appName = object.getString("name");
+            String versionCode = object.getString("version");
+            if (!TextUtils.isEmpty(versionCode)) {
+                appInfo.appVersionCode = Integer.parseInt(versionCode);
+            }
+            appInfo.appVersionName = object.getString("versionShort");
+            appInfo.appChangeLog = object.getString("changelog");
+            appInfo.appInstallUrl = object.getString("installUrl");
             if (object.has("binary")) {
                 JSONObject binary = object.getJSONObject("binary");
                 if (binary != null) {
-                    appSize = binary.getLong("fsize");
+                    appInfo.appSize = binary.getLong("fsize");
                 }
             }
-            Log.d(TAG, "appName: " + appName +
-                    "\nappVersionCode: " + appVersionCode +
-                    "\nappVersionName: " + appVersionName +
-                    "\nappChangeLog: " + appChangeLog +
-                    "\nappInstallUrl: " + appInstallUrl +
-                    "\nappSize: " + appSize);
-            return true;
+            Log.d(TAG, appInfo.toString());
+            return appInfo;
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return false;
+        return null;
     }
 
 }

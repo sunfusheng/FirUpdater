@@ -1,4 +1,4 @@
-# FirUpdater
+# FirUpdater [ ![Download](https://api.bintray.com/packages/sfsheng0322/maven/FirUpdater/images/download.svg) ](https://bintray.com/sfsheng0322/maven/FirUpdater/_latestVersion)
 
 FIR 测试通道下 APK 更新器 
 
@@ -12,11 +12,11 @@ FIR 测试通道下 APK 更新器
 
 #### Gradle:
 
-    compile 'com.sunfusheng:GroupRecyclerViewAdapter:<latest-version>'
+    compile 'com.sunfusheng:FirUpdater:<latest-version>'
 
 <br/>
 
-### 扫一扫[Fir.im](https://fir.im/GroupAdapter)二维码下载APK
+### 扫一扫[Fir.im](https://fir.im/FirUpdater)二维码下载APK
 
 <br/>
 

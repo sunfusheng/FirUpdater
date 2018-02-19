@@ -55,7 +55,7 @@ deploy:
 
 after_deploy:
 - "./gradlew clean build bintrayUpload -PbintrayUser=sfsheng0322 -PbintrayKey=$BINTRAY_TOKEN -PdryRun=false"
-- fir p Sample/outputs/FirUpdater.apk -T $FIR_TOKEN -c "`git cat-file tag $TRAVIS_TAG`"
+- fir publish Sample/outputs/FirUpdater.apk -T $FIR_TOKEN -c "优化体验\n修复了一些问题"
 
 notifications:
   email:

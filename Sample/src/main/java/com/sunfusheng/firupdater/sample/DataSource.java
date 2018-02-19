@@ -3,7 +3,10 @@ package com.sunfusheng.firupdater.sample;
 /**
  * @author sunfusheng on 2018/2/17.
  */
-public class DataUtil {
+public class DataSource {
+
+    public static final String API_TOKEN = "3c57fb226edf7facf821501e4eba08d2";
+    public static final String FIR_UPDATER_APP_ID = "5a89af10548b7a760110c918";
 
     public static AppConfig[][] apps = {
             {AppConfig.NULL, AppConfig.GROUP_RECYCLER_VIEW_ADAPTER}
@@ -16,14 +19,12 @@ public class DataUtil {
         public int key;
         public int titleId;
         public int subtitleId;
-        public String appToken;
         public String appId;
 
         AppConfig(int key, int titleId, int subtitleId, String appId) {
             this.key = key;
             this.titleId = titleId;
             this.subtitleId = subtitleId;
-            this.appToken = "3c57fb226edf7facf821501e4eba08d2";
             this.appId = appId;
         }
     }

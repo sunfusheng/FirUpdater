@@ -10,17 +10,17 @@ import java.util.List;
 /**
  * @author sunfusheng on 2018/2/17.
  */
-public class AppAdapter extends HeaderGroupRecyclerViewAdapter<DataUtil.AppConfig> {
+public class AppsAdapter extends HeaderGroupRecyclerViewAdapter<DataSource.AppConfig> {
 
-    public AppAdapter(Context context) {
+    public AppsAdapter(Context context) {
         super(context);
     }
 
-    public AppAdapter(Context context, List<List<DataUtil.AppConfig>> items) {
+    public AppsAdapter(Context context, List<List<DataSource.AppConfig>> items) {
         super(context, items);
     }
 
-    public AppAdapter(Context context, DataUtil.AppConfig[][] items) {
+    public AppsAdapter(Context context, DataSource.AppConfig[][] items) {
         super(context, items);
     }
 
@@ -35,12 +35,12 @@ public class AppAdapter extends HeaderGroupRecyclerViewAdapter<DataUtil.AppConfi
     }
 
     @Override
-    public void onBindHeaderViewHolder(GroupViewHolder holder, DataUtil.AppConfig item, int groupPosition) {
+    public void onBindHeaderViewHolder(GroupViewHolder holder, DataSource.AppConfig item, int groupPosition) {
 
     }
 
     @Override
-    public void onBindChildViewHolder(GroupViewHolder holder, DataUtil.AppConfig item, int groupPosition, int childPosition) {
+    public void onBindChildViewHolder(GroupViewHolder holder, DataSource.AppConfig item, int groupPosition, int childPosition) {
         holder.setText(R.id.tv_title, item.titleId);
         holder.setText(R.id.tv_subtitle, item.subtitleId);
 
