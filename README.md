@@ -12,6 +12,12 @@ FIR 测试通道下 APK 更新器
 
 ### Gradle:
 
+    allprojects {
+        repositories {
+            maven { url 'https://dl.bintray.com/sfsheng0322/maven' }
+        }
+    }
+
     compile 'com.sunfusheng:FirUpdater:<latest-version>'
 
 <br/>
