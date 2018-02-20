@@ -4,17 +4,32 @@ FIR 测试通道下 APK 更新器
 
 <br/>
 
-### 效果图
+### 应用截图
 
 <img src="/resources/res.png" >
 
 <br/>
 
-#### Gradle:
+### Gradle:
 
     compile 'com.sunfusheng:FirUpdater:<latest-version>'
 
 <br/>
+
+### 使用
+
+一行代码即可  
+
+    new FirUpdater(context, YOUR_FIR_API_TOKEN, YOUR_FIR_APP_ID).checkVersion();
+    
+如果你还想自定义APK名称或者将APK下载到自定义路径下，你可以这样设置：
+
+    new FirUpdater(context, YOUR_FIR_API_TOKEN, YOUR_FIR_APP_ID)
+        .setApkName(YOUR_APK_NAME)
+        .setApkPath(YOUR_APK_PATH)
+        .checkVersion();
+        
+需要注意的是，你需要自己申请文件读写权限！
 
 ### 扫一扫[Fir.im](https://fir.im/FirUpdater)二维码下载APK
 

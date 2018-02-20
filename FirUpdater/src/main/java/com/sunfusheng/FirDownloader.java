@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.widget.Toast;
 
 import java.io.InputStream;
 import java.io.RandomAccessFile;
@@ -82,7 +83,7 @@ public class FirDownloader {
                         threadArr[i].start();
                     }
                 } else {
-                    handler.sendEmptyMessage(STATE_ERROR);
+                    handler.sendMessage(handler.obtainMessage(STATE_ERROR, "下载受限啦，明日早来哦^_^"));
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -230,6 +231,10 @@ public class FirDownloader {
                         break;
                     case STATE_ERROR:
                         onDownLoadListener.onError();
+                        Object obj = msg.obj;
+                        if (obj != null && obj instanceof String) {
+                            Toast.makeText(context, (String) obj, Toast.LENGTH_LONG).show();
+                        }
                         break;
                     default:
                         int progress = msg.what;
