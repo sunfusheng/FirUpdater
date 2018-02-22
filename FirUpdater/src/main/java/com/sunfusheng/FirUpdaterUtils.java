@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
@@ -12,6 +13,8 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.v4.content.FileProvider;
+import android.text.TextUtils;
+import android.util.Log;
 
 import java.io.Closeable;
 import java.io.File;
@@ -23,6 +26,30 @@ import java.util.List;
  * @author sunfusheng on 2018/2/17.
  */
 public class FirUpdaterUtils {
+
+    public static String TAG = "FirUpdater";
+    public static boolean enableLog = true;
+
+    public static void logger(String log) {
+        if (enableLog && !TextUtils.isEmpty(log)) {
+            Log.d(TAG, log);
+        }
+    }
+
+    public static void loggerError(String log) {
+        if (enableLog && !TextUtils.isEmpty(log)) {
+            Log.e(TAG, log);
+        }
+    }
+
+    public static void loggerError(Exception e) {
+        if (enableLog && e != null) {
+            e.printStackTrace();
+            if (!TextUtils.isEmpty(e.getMessage())) {
+                Log.e(TAG, e.getMessage());
+            }
+        }
+    }
 
     public static String getPackageName(Context context) {
         return context.getPackageName();
@@ -178,5 +205,62 @@ public class FirUpdaterUtils {
                 runnable.run();
             }
         }
+    }
+
+    private static SharedPreferences sharedPreferences;
+    private static final String SP_NAME = "fir_downloader_progress_file_name";
+
+    public static SharedPreferences getSharedPreferences(Context context) {
+        if (sharedPreferences == null) {
+            sharedPreferences = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
+        }
+        return sharedPreferences;
+    }
+
+    public static void putCurrLengthValue(Context context, String key, int value) {
+        getSharedPreferences(context)
+                .edit()
+                .putInt(key, value)
+                .apply();
+    }
+
+    public static int getCurrLengthValue(Context context, String key) {
+        return getSharedPreferences(context).getInt(key, 0);
+    }
+
+    public static boolean isAppInstalled(Context context, String appPackageName) {
+        PackageManager manager = context.getPackageManager();
+        if (manager == null) {
+            return false;
+        }
+
+        List<PackageInfo> infos = manager.getInstalledPackages(0);
+        if (infos != null) {
+            for (int i = 0; i < infos.size(); i++) {
+                String packageName = infos.get(i).packageName;
+                if (packageName.equals(appPackageName)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public static boolean startApp(Context context, String appPackageName) {
+        try {
+            PackageManager manager = context.getPackageManager();
+            if (manager == null) {
+                return false;
+            }
+
+            Intent intent = manager.getLaunchIntentForPackage(appPackageName);
+            if (intent != null) {
+                context.startActivity(intent);
+                return true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }

@@ -46,6 +46,21 @@ public class FirUpdater {
     }
 
     public void checkVersion() {
+        FirPermissionHelper.getInstant().requestPermission(context, new FirPermissionHelper.OnPermissionCallback() {
+            @Override
+            public void onGranted() {
+                requestAppInfo();
+            }
+
+            @Override
+            public void onDenied() {
+                FirUpdaterUtils.loggerError("申请权限未通过");
+            }
+        });
+
+    }
+
+    private void requestAppInfo() {
         new Thread(() -> {
             appInfo = new FirAppInfo().requestAppInfo(appVersionUrl);
             if (appInfo == null) {
@@ -88,6 +103,8 @@ public class FirUpdater {
             apkPath = Environment.getExternalStorageDirectory() + File.separator + apkName;
         }
 
+        FirUpdaterUtils.logger("apkPath: " + apkPath);
+
         File apkFile = new File(apkPath);
         if (apkFile.exists()) {
             FirUpdaterUtils.installApk(context, apkPath);
@@ -98,7 +115,7 @@ public class FirUpdater {
         firNotification.createBuilder(context);
         firNotification.setContentTitle("正在下载" + appInfo.appName);
 
-        firDownloader = new FirDownloader(context, appInfo.appInstallUrl, apkPath);
+        firDownloader = new FirDownloader(context.getApplicationContext(), apkName, apkPath, appInfo.appInstallUrl, appInfo.appSize);
         firDownloader.setOnDownLoadListener(new FirDownloader.OnDownLoadListener() {
             @Override
             public void onProgress(int progress) {
@@ -123,7 +140,7 @@ public class FirUpdater {
 
             }
         });
-        firDownloader.downLoad();
+        firDownloader.downloadApk();
     }
 
     public FirDialog getFirDialog() {

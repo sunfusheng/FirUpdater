@@ -1,7 +1,6 @@
 package com.sunfusheng;
 
 import android.text.TextUtils;
-import android.util.Log;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -16,37 +15,27 @@ import java.net.URL;
  */
 public class FirAppInfo {
 
-    private static final String TAG = "FirAppInfo";
-
     public AppInfo requestAppInfo(String url) {
-        Log.d(TAG, url);
-        BufferedReader in = null;
-        HttpURLConnection conn = null;
         try {
-            conn = (HttpURLConnection) new URL(url).openConnection();
+            FirUpdaterUtils.logger(url);
+            HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
             conn.setRequestMethod("GET");
-            conn.setDoOutput(false);
-            conn.setDoInput(true);
             conn.setConnectTimeout(10000);
-            conn.setReadTimeout(10000);
-            conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-            conn.connect();
+
             if (conn.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                in = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
+                BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
                 StringBuilder result = new StringBuilder();
                 String line;
-                while ((line = in.readLine()) != null) {
+
+                while ((line = br.readLine()) != null) {
                     result.append(line);
                 }
+
+                FirUpdaterUtils.closeQuietly(br);
                 return parseResult(result.toString());
             }
         } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            FirUpdaterUtils.closeQuietly(in);
-            if (conn != null) {
-                conn.disconnect();
-            }
+            FirUpdaterUtils.loggerError(e);
         }
         return null;
     }
@@ -57,7 +46,7 @@ public class FirAppInfo {
         public String appVersionName;
         public String appChangeLog;
         public String appInstallUrl;
-        public long appSize;
+        public int appSize;
 
         @Override
         public String toString() {
@@ -82,16 +71,16 @@ public class FirAppInfo {
             if (!TextUtils.isEmpty(versionCode)) {
                 appInfo.appVersionCode = Integer.parseInt(versionCode);
             }
-            appInfo.appVersionName = "V"+object.getString("versionShort");
+            appInfo.appVersionName = "V" + object.getString("versionShort");
             appInfo.appChangeLog = object.getString("changelog");
             appInfo.appInstallUrl = object.getString("installUrl");
             if (object.has("binary")) {
                 JSONObject binary = object.getJSONObject("binary");
                 if (binary != null) {
-                    appInfo.appSize = binary.getLong("fsize");
+                    appInfo.appSize = binary.getInt("fsize");
                 }
             }
-            Log.d(TAG, appInfo.toString());
+            FirUpdaterUtils.logger(appInfo.toString());
             return appInfo;
         } catch (JSONException e) {
             e.printStackTrace();

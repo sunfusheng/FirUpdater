@@ -54,12 +54,12 @@ public class FirDialog {
                 Field messageView = alertController.getClass().getDeclaredField("mMessageView");
                 messageView.setAccessible(true);
                 TextView textView = (TextView) messageView.get(alertController);
-                textView.setTextSize(12);
+                textView.setTextSize(13);
                 textView.setTextColor(Color.parseColor("#9a9a9a"));
             } catch (IllegalAccessException e) {
-                e.printStackTrace();
+                FirUpdaterUtils.loggerError(e);
             } catch (NoSuchFieldException e) {
-                e.printStackTrace();
+                FirUpdaterUtils.loggerError(e);
             }
         }
     }
@@ -83,6 +83,9 @@ public class FirDialog {
                 }
             });
             progressDialog.show();
+
+            progressDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.parseColor("#333333"));
+            progressDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.parseColor("#9a9a9a"));
         }
 
         if (progressDialog.isShowing()) {

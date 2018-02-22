@@ -12,6 +12,12 @@
 
     <application>
 
+        <activity
+            android:name="com.sunfusheng.FirPermissionHelper$FirPermissionActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:theme="@style/ActivityTranslucent"
+            android:windowSoftInputMode="stateHidden|stateAlwaysHidden"/>
+
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="${applicationId}.file_provider"
