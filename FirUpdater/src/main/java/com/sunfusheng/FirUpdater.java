@@ -88,6 +88,12 @@ public class FirUpdater {
             apkPath = Environment.getExternalStorageDirectory() + File.separator + apkName;
         }
 
+        File apkFile = new File(apkPath);
+        if (apkFile.exists()) {
+            FirUpdaterUtils.installApk(context, apkPath);
+            return;
+        }
+
         firNotification = new FirNotification();
         firNotification.createBuilder(context);
         firNotification.setContentTitle("正在下载" + appInfo.appName);
