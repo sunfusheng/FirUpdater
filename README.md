@@ -12,11 +12,15 @@ FIR 测试通道下 APK 更新器
 
 ### Gradle:
 
+工程的 build.gradle 添加：
+
     allprojects {
         repositories {
             maven { url 'https://dl.bintray.com/sfsheng0322/maven' }
         }
     }
+    
+模块的 build.gradle 添加：
 
     compile 'com.sunfusheng:FirUpdater:<latest-version>'
 
@@ -34,8 +38,8 @@ FIR 测试通道下 APK 更新器
         .setApkName(YOUR_APK_NAME)
         .setApkPath(YOUR_APK_PATH)
         .checkVersion();
-        
-需要注意的是，你需要自己申请文件读写权限！
+    
+<br/>
 
 ### 扫一扫[Fir.im](https://fir.im/FirUpdater)二维码下载APK
 
