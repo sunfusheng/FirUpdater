@@ -1,6 +1,6 @@
 # FirUpdater [ ![Download](https://api.bintray.com/packages/sfsheng0322/maven/FirUpdater/images/download.svg) ](https://bintray.com/sfsheng0322/maven/FirUpdater/_latestVersion)
 
-FIR 测试通道下 APK 更新器 
+Fir.im通道APK更新器，使用简单，让自己的demo快速具备升级功能
 
 <br/>
 
@@ -28,15 +28,17 @@ FIR 测试通道下 APK 更新器
 
 ### 使用
 
-一行代码即可  
+简单升级，一行代码即可：
 
     new FirUpdater(context, YOUR_FIR_API_TOKEN, YOUR_FIR_APP_ID).checkVersion();
     
-如果你还想自定义APK名称或者将APK下载到自定义路径下，你可以这样设置：
+如果你需要更多设置，请参考：
 
-    new FirUpdater(context, YOUR_FIR_API_TOKEN, YOUR_FIR_APP_ID)
-        .setApkName(YOUR_APK_NAME)
-        .setApkPath(YOUR_APK_PATH)
+    new FirUpdater(context)
+        .apiToken(YOUR_FIR_API_TOKEN)
+        .appId(YOUR_FIR_APP_ID)
+        .apkName(YOUR_APK_NAME)
+        .apkPath(YOUR_APK_PATH)
         .checkVersion();
     
 <br/>

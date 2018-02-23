@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Environment;
 import android.text.TextUtils;
+import android.widget.Toast;
 
 import java.io.File;
 
@@ -13,39 +14,67 @@ import java.io.File;
 public class FirUpdater {
 
     private Context context;
+    private String apiToken;
+    private String appId;
     private String appVersionUrl;
-
-    private FirAppInfo.AppInfo appInfo;
     private String apkName;
     private String apkPath;
-    private boolean isBackgroundDownload;
-    private boolean forceShowDialog;
+    private FirAppInfo.AppInfo appInfo;
+    private boolean isBackgroundDownload = false;
+    private boolean forceShowDialog = false;
 
     private FirDialog firDialog;
     private FirDownloader firDownloader;
     private FirNotification firNotification;
 
-    public FirUpdater(Context context, String apiToken, String appId) {
-        this.context = context;
-        this.appVersionUrl = "http://api.fir.im/apps/latest/" + appId + "?api_token=" + apiToken;
+    public FirUpdater(Context context) {
+        this(context, null, null);
     }
 
-    public FirUpdater enableForceShowDialog(boolean enable) {
-        this.forceShowDialog = enable;
+    public FirUpdater(Context context, String apiToken, String appId) {
+        this.context = context;
+        this.apiToken = apiToken;
+        this.appId = appId;
+    }
+
+    public FirUpdater apiToken(String apiToken) {
+        this.apiToken = apiToken;
         return this;
     }
 
-    public FirUpdater setApkName(String apkName) {
+    public FirUpdater appId(String appId) {
+        this.appId = appId;
+        return this;
+    }
+
+    public FirUpdater apkName(String apkName) {
         this.apkName = apkName;
         return this;
     }
 
-    public FirUpdater setApkPath(String apkPath) {
+    public FirUpdater apkPath(String apkPath) {
         this.apkPath = apkPath;
         return this;
     }
 
+    public FirUpdater forceShowDialog(boolean enable) {
+        this.forceShowDialog = enable;
+        return this;
+    }
+
     public void checkVersion() {
+        if (TextUtils.isEmpty(apiToken) || TextUtils.isEmpty(appId)) {
+            Toast.makeText(context, "请设置 API TOKEN && APP ID", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        this.appVersionUrl = "http://api.fir.im/apps/latest/" + appId + "?api_token=" + apiToken;
+
+        if (firDownloader != null && firDownloader.isGoOn()) {
+            Toast.makeText(context, "正在下载【" + appInfo.apkName + "】，请稍后", Toast.LENGTH_LONG).show();
+            return;
+        }
+
         FirPermissionHelper.getInstant().requestPermission(context, new FirPermissionHelper.OnPermissionCallback() {
             @Override
             public void onGranted() {
@@ -57,7 +86,6 @@ public class FirUpdater {
                 FirUpdaterUtils.loggerError("申请权限未通过");
             }
         });
-
     }
 
     private void requestAppInfo() {
@@ -66,6 +94,19 @@ public class FirUpdater {
             if (appInfo == null) {
                 return;
             }
+
+            if (TextUtils.isEmpty(apkName)) {
+                apkName = appInfo.appName + "-" + appInfo.appVersionName + ".apk";
+            }
+
+            if (TextUtils.isEmpty(apkPath)) {
+                apkPath = Environment.getExternalStorageDirectory() + File.separator + apkName;
+            }
+
+            appInfo.appId = appId;
+            appInfo.apkName = apkName;
+            appInfo.apkPath = apkPath;
+            FirUpdaterUtils.logger(appInfo.toString());
 
             boolean needUpdate = appInfo.appVersionCode > FirUpdaterUtils.getVersionCode(context);
             if (forceShowDialog || needUpdate) {
@@ -96,15 +137,6 @@ public class FirUpdater {
     }
 
     private void downloadApk() {
-        if (TextUtils.isEmpty(apkName)) {
-            apkName = appInfo.appName + "-V" + appInfo.appVersionName + ".apk";
-        }
-        if (TextUtils.isEmpty(apkPath)) {
-            apkPath = Environment.getExternalStorageDirectory() + File.separator + apkName;
-        }
-
-        FirUpdaterUtils.logger("apkPath: " + apkPath);
-
         File apkFile = new File(apkPath);
         if (apkFile.exists()) {
             FirUpdaterUtils.installApk(context, apkPath);
@@ -115,7 +147,7 @@ public class FirUpdater {
         firNotification.createBuilder(context);
         firNotification.setContentTitle("正在下载" + appInfo.appName);
 
-        firDownloader = new FirDownloader(context.getApplicationContext(), apkName, apkPath, appInfo.appInstallUrl, appInfo.appSize);
+        firDownloader = new FirDownloader(context.getApplicationContext(), appInfo);
         firDownloader.setOnDownLoadListener(new FirDownloader.OnDownLoadListener() {
             @Override
             public void onProgress(int progress) {

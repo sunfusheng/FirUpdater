@@ -10,7 +10,7 @@ import com.sunfusheng.FirUpdaterUtils;
 
 public class MainActivity extends AppCompatActivity {
 
-    private DataSource.AppConfig config;
+    private FirUpdater firUpdater;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,7 +19,11 @@ public class MainActivity extends AppCompatActivity {
 
         setTitle(getString(R.string.app_name) + "（V" + FirUpdaterUtils.getVersionName(this) + "）");
 
-        new FirUpdater(this, DataSource.API_TOKEN, DataSource.FIR_UPDATER_APP_ID).checkVersion();
+        firUpdater = new FirUpdater(this);
+
+        firUpdater.apiToken(DataSource.API_TOKEN)
+                .appId(DataSource.FIR_UPDATER_APP_ID)
+                .checkVersion();
 
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -27,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setAdapter(appsAdapter);
 
         appsAdapter.setOnItemClickListener((adapter, holder, groupPosition, childPosition) -> {
-            config = appsAdapter.getItem(groupPosition, childPosition);
+            DataSource.AppConfig config = appsAdapter.getItem(groupPosition, childPosition);
             if (config.key == 0) {
                 return;
             }
@@ -37,8 +41,8 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
 
-            new FirUpdater(this, DataSource.API_TOKEN, getString(config.appId))
-                    .enableForceShowDialog(true)
+            firUpdater.appId(getString(config.appId))
+                    .forceShowDialog(true)
                     .checkVersion();
         });
     }

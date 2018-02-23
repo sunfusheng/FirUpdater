@@ -41,6 +41,7 @@ public class FirAppInfo {
     }
 
     public class AppInfo {
+        // 从 fir.im 获取的信息
         public String appName;
         public int appVersionCode;
         public String appVersionName;
@@ -48,15 +49,23 @@ public class FirAppInfo {
         public String appInstallUrl;
         public int appSize;
 
+        // 添加的信息
+        public String appId;
+        public String apkName;
+        public String apkPath;
+
         @Override
         public String toString() {
-            return "AppInfo{" +
-                    "\nappName='" + appName +
-                    "\nappVersionCode=" + appVersionCode +
-                    "\nappVersionName='" + appVersionName +
-                    "\nappChangeLog='" + appChangeLog +
-                    "\nappInstallUrl='" + appInstallUrl +
-                    "\nappSize=" + appSize +
+            return "AppInfo \n{" +
+                    "\n appName='" + appName +
+                    "\n appVersionCode=" + appVersionCode +
+                    "\n appVersionName='" + appVersionName +
+                    "\n appChangeLog='" + appChangeLog +
+                    "\n appInstallUrl='" + appInstallUrl +
+                    "\n appSize=" + appSize +
+                    "\n appId='" + appId +
+                    "\n apkName='" + apkName +
+                    "\n apkPath='" + apkPath +
                     "\n}";
         }
     }
@@ -80,7 +89,6 @@ public class FirAppInfo {
                     appInfo.appSize = binary.getInt("fsize");
                 }
             }
-            FirUpdaterUtils.logger(appInfo.toString());
             return appInfo;
         } catch (JSONException e) {
             e.printStackTrace();

@@ -65,5 +65,4 @@ dependencies {
     implementation 'com.android.support:design:' + gradle.supportLibraryVersion
     implementation 'com.sunfusheng:GroupRecyclerViewAdapter:1.0.2'
     implementation project(":FirUpdater")
-//    implementation'com.sunfusheng:FirUpdater:1.0.4'
 }

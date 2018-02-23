@@ -2,7 +2,6 @@ buildscript {
     repositories {
         google()
         jcenter()
-        maven { url 'https://dl.bintray.com/sfsheng0322/maven' }
     }
 
     dependencies {
@@ -15,7 +14,6 @@ allprojects {
     repositories {
         google()
         jcenter()
-        maven { url 'https://dl.bintray.com/sfsheng0322/maven' }
     }
 }
 
