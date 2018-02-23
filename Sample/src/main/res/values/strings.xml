@@ -9,7 +9,7 @@
     <string name="grva_pkg">com.sunfusheng.adapter.sample</string>
 
 
-    <string name="_360_title">全景图</string>
+    <string name="_360_title">DroidVR</string>
     <string name="_360_subtitle">360°全景图是一个值得把玩的应用</string>
     <string name="_360_app_id">59a52a7d959d69410b00060d</string>
     <string name="_360_pkg"> com.sunfusheng.vr</string>

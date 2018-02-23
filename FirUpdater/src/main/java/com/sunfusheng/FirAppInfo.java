@@ -53,6 +53,7 @@ public class FirAppInfo {
         public String appId;
         public String apkName;
         public String apkPath;
+        public String apkLocalUrl;
 
         @Override
         public String toString() {
@@ -66,6 +67,7 @@ public class FirAppInfo {
                     "\n appId='" + appId +
                     "\n apkName='" + apkName +
                     "\n apkPath='" + apkPath +
+                    "\n apkLocalUrl='" + apkLocalUrl +
                     "\n}";
         }
     }

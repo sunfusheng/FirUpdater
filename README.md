@@ -37,7 +37,6 @@ Fir.im通道APK更新器，使用简单，让自己的demo快速具备升级功�
     new FirUpdater(context)
         .apiToken(YOUR_FIR_API_TOKEN)
         .appId(YOUR_FIR_APP_ID)
-        .apkName(YOUR_APK_NAME)
         .apkPath(YOUR_APK_PATH)
         .checkVersion();
     

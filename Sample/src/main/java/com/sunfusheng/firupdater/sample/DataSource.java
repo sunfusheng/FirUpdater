@@ -10,7 +10,7 @@ public class DataSource {
 
     public static AppConfig[][] apps = {
             {AppConfig.NULL, AppConfig.MV, AppConfig.GIV, AppConfig.GRVA},
-            {AppConfig.NULL, AppConfig.GANK, AppConfig._360, AppConfig.TULING, AppConfig.SHLV}
+            {AppConfig.NULL, AppConfig.GANK, AppConfig.SHLV, AppConfig._360, AppConfig.TULING}
     };
 
     public enum AppConfig {
@@ -21,9 +21,9 @@ public class DataSource {
         GRVA(R.attr.key_grva, R.string.grva_title, R.string.grva_subtitle, R.string.grva_app_id, R.string.grva_pkg),
 
         GANK(R.attr.key_gank, R.string.gank_title, R.string.gank_subtitle, R.string.gank_app_id, R.string.gank_pkg),
+        SHLV(R.attr.key_shlv, R.string.shlv_title, R.string.shlv_subtitle, R.string.shlv_app_id, R.string.shlv_pkg),
         _360(R.attr.key_360, R.string._360_title, R.string._360_subtitle, R.string._360_app_id, R.string._360_pkg),
-        TULING(R.attr.key_tuling, R.string.tuling_title, R.string.tuling_subtitle, R.string.tuling_app_id, R.string.tuling_pkg),
-        SHLV(R.attr.key_shlv, R.string.shlv_title, R.string.shlv_subtitle, R.string.shlv_app_id, R.string.shlv_pkg);
+        TULING(R.attr.key_tuling, R.string.tuling_title, R.string.tuling_subtitle, R.string.tuling_app_id, R.string.tuling_pkg);
 
         public int key;
         public int titleId;

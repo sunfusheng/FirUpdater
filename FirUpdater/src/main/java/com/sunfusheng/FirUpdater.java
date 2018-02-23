@@ -17,7 +17,6 @@ public class FirUpdater {
     private String apiToken;
     private String appId;
     private String appVersionUrl;
-    private String apkName;
     private String apkPath;
     private FirAppInfo.AppInfo appInfo;
     private boolean isBackgroundDownload = false;
@@ -44,11 +43,6 @@ public class FirUpdater {
 
     public FirUpdater appId(String appId) {
         this.appId = appId;
-        return this;
-    }
-
-    public FirUpdater apkName(String apkName) {
-        this.apkName = apkName;
         return this;
     }
 
@@ -95,17 +89,16 @@ public class FirUpdater {
                 return;
             }
 
-            if (TextUtils.isEmpty(apkName)) {
-                apkName = appInfo.appName + "-" + appInfo.appVersionName + ".apk";
+            String apkName = appInfo.appName + "-" + appInfo.appVersionName + ".apk";
+            if (TextUtils.isEmpty(apkPath)) {
+                apkPath = Environment.getExternalStorageDirectory() + File.separator;
             }
 
-            if (TextUtils.isEmpty(apkPath)) {
-                apkPath = Environment.getExternalStorageDirectory() + File.separator + apkName;
-            }
 
             appInfo.appId = appId;
             appInfo.apkName = apkName;
             appInfo.apkPath = apkPath;
+            appInfo.apkLocalUrl = apkPath + apkName;
             FirUpdaterUtils.logger(appInfo.toString());
 
             boolean needUpdate = appInfo.appVersionCode > FirUpdaterUtils.getVersionCode(context);
@@ -137,9 +130,9 @@ public class FirUpdater {
     }
 
     private void downloadApk() {
-        File apkFile = new File(apkPath);
+        File apkFile = new File(appInfo.apkLocalUrl);
         if (apkFile.exists()) {
-            FirUpdaterUtils.installApk(context, apkPath);
+            FirUpdaterUtils.installApk(context, appInfo.apkLocalUrl);
             return;
         }
 
@@ -164,7 +157,7 @@ public class FirUpdater {
                 if (isBackgroundDownload) {
                     firNotification.cancel();
                 }
-                FirUpdaterUtils.installApk(context, apkPath);
+                FirUpdaterUtils.installApk(context, appInfo.apkLocalUrl);
             }
 
             @Override

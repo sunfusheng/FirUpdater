@@ -47,7 +47,7 @@ public class FirDownloader {
 
                 if (conn.getResponseCode() == HttpURLConnection.HTTP_PARTIAL) {
                     InputStream is = conn.getInputStream();
-                    RandomAccessFile raf = new RandomAccessFile(appInfo.apkPath, "rwd");
+                    RandomAccessFile raf = new RandomAccessFile(appInfo.apkLocalUrl, "rwd");
                     raf.setLength(fileLength);
                     raf.seek(currLength);
 
