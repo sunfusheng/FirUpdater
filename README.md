@@ -43,8 +43,6 @@ Fir.im通道APK更新器，使用简单，让自己的demo快速具备升级功�
         .checkVersion();
 
 如果不设置apkPath，默认下载到SDCard的根目录下  
-    
-<br/>
 
 ### 扫一扫[Fir.im](https://fir.im/FirUpdater)二维码下载APK
 
@@ -58,9 +56,13 @@ Fir.im通道APK更新器，使用简单，让自己的demo快速具备升级功�
 
 <img src="http://ourvm0t8d.bkt.clouddn.com/wx_gongzhonghao.png">
 
+<br/>
+
 ### 打点赏给作者加点油^_^
 
 <img src="http://ourvm0t8d.bkt.clouddn.com/wx_shoukuanma.png" >
+
+<br/>
 
 ### 关于我
 
