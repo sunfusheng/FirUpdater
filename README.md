@@ -28,17 +28,21 @@ Fir.im通道APK更新器，使用简单，让自己的demo快速具备升级功�
 
 ### 使用
 
-简单升级，一行代码即可：
+检查升级一行代码即可：
 
-    new FirUpdater(context, YOUR_FIR_API_TOKEN, YOUR_FIR_APP_ID).checkVersion();
+    new FirUpdater(context, YOUR_FIR_API_TOKEN, YOUR_FIR_APP_ID)
+        .apkPath(YOUR_APK_PATH)
+        .checkVersion();
     
-或者你可以这样设置：
+你也可以这样设置：
 
     new FirUpdater(context)
         .apiToken(YOUR_FIR_API_TOKEN)
         .appId(YOUR_FIR_APP_ID)
         .apkPath(YOUR_APK_PATH)
         .checkVersion();
+
+如果不设置apkPath，默认下载到SDCard的根目录下  
     
 <br/>
 
@@ -52,11 +56,11 @@ Fir.im通道APK更新器，使用简单，让自己的demo快速具备升级功�
 
 ### 个人微信公众号
 
-<img src="http://ourvm0t8d.bkt.clouddn.com/follow_wechat.png">
+<img src="http://ourvm0t8d.bkt.clouddn.com/wx_gongzhonghao.png">
 
-### 打个赏给作者加点油吧^_^
+### 打点赏给作者加点油^_^
 
-<img src="http://ourvm0t8d.bkt.clouddn.com/follow_wechat.png" >
+<img src="http://ourvm0t8d.bkt.clouddn.com/wx_shoukuanma.png" >
 
 ### 关于我
 
