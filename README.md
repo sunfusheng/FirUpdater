@@ -32,7 +32,7 @@ Fir.im通道APK更新器，使用简单，让自己的demo快速具备升级功�
 
     new FirUpdater(context, YOUR_FIR_API_TOKEN, YOUR_FIR_APP_ID).checkVersion();
     
-如果你需要更多设置，请参考：
+或者你可以这样设置：
 
     new FirUpdater(context)
         .apiToken(YOUR_FIR_API_TOKEN)
@@ -46,17 +46,17 @@ Fir.im通道APK更新器，使用简单，让自己的demo快速具备升级功�
 
 <br/>
 
-<img src="/resources/fir.im.png" style="width: 30%;" alt="s">
+<img src="/resources/fir.im.png">
 
 <br/>
 
-### 关注我吧，让我们做朋友^_^
+### 个人微信公众号
 
-<img src="http://ourvm0t8d.bkt.clouddn.com/follow_me.png">
+<img src="http://ourvm0t8d.bkt.clouddn.com/follow_wechat.png">
 
-### 打个赏吧，给作者加点油^_^
+### 打个赏给作者加点油吧^_^
 
-<img src="http://ourvm0t8d.bkt.clouddn.com/reward_me.png" >
+<img src="http://ourvm0t8d.bkt.clouddn.com/follow_wechat.png" >
 
 ### 关于我
 
