@@ -1,6 +1,8 @@
 package com.sunfusheng;
 
+import android.annotation.TargetApi;
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -10,6 +12,8 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 
+import static android.os.Build.VERSION.SDK_INT;
+import static android.os.Build.VERSION_CODES.O;
 import static android.support.v4.app.NotificationCompat.DEFAULT_LIGHTS;
 import static android.support.v4.app.NotificationCompat.VISIBILITY_PUBLIC;
 
@@ -44,9 +48,21 @@ public class FirNotification {
         builder.setVisibility(VISIBILITY_PUBLIC);
         builder.setContentIntent(pendingIntent);
         builder.setDefaults(DEFAULT_LIGHTS);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+        if (SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             builder.setPriority(Notification.PRIORITY_HIGH);
         }
+        if (SDK_INT >= O) {
+            setupNotificationChannel("FirUpdater", manager, builder);
+        }
+    }
+
+    @TargetApi(O)
+    private static void setupNotificationChannel(String channelName, NotificationManager notificationManager, NotificationCompat.Builder builder) {
+        if (notificationManager.getNotificationChannel(CHANNEL_ID) == null) {
+            NotificationChannel notificationChannel = new NotificationChannel(CHANNEL_ID, channelName, NotificationManager.IMPORTANCE_DEFAULT);
+            notificationManager.createNotificationChannel(notificationChannel);
+        }
+        builder.setChannelId(CHANNEL_ID);
     }
 
     public void setContentTitle(String title) {
