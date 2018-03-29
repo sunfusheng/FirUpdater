@@ -84,6 +84,7 @@ public class FirDownloader {
                 } else {
                     handler.sendMessage(handler.obtainMessage(STATE_ERROR, "下载受限啦，明日早来哦^_^"));
                 }
+                conn.disconnect();
             } catch (Exception e) {
                 FirUpdaterUtils.loggerError(e);
                 FirUpdaterUtils.putCurrLengthValue(context, appInfo.apkName, 0);
