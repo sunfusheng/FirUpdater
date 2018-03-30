@@ -36,9 +36,10 @@ public class FirDownloader {
 
     public void downloadApk() {
         new Thread(() -> {
+            HttpURLConnection conn = null;
             try {
                 isGoOn = true;
-                HttpURLConnection conn = (HttpURLConnection) new URL(appInfo.appInstallUrl).openConnection();
+                conn = (HttpURLConnection) new URL(appInfo.appInstallUrl).openConnection();
                 conn.setConnectTimeout(10000);
                 conn.setRequestMethod("GET");
                 currLength = FirUpdaterUtils.getCurrLengthValue(context, appInfo.apkName);
@@ -91,6 +92,9 @@ public class FirDownloader {
                 handler.sendEmptyMessage(STATE_ERROR);
             } finally {
                 isGoOn = false;
+                if (conn != null) {
+                    conn.disconnect();
+                }
             }
         }).start();
     }
