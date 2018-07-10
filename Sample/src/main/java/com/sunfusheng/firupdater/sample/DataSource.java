@@ -9,13 +9,14 @@ public class DataSource {
     public static final String FIR_UPDATER_APP_ID = "5a89af10548b7a760110c918";
 
     public static AppConfig[][] apps = {
-            {AppConfig.NULL, AppConfig.MV, AppConfig.GIV, AppConfig.GRVA},
+            {AppConfig.NULL, AppConfig.MultiType, AppConfig.MV, AppConfig.GIV, AppConfig.GRVA},
             {AppConfig.NULL, AppConfig.GANK, AppConfig.SHLV, AppConfig._360, AppConfig.TULING}
     };
 
     public enum AppConfig {
         NULL(0, 0, 0, 0, 0),
 
+        MultiType(R.attr.key_multitype, R.string.multitype_title, R.string.multitype_subtitle, R.string.multitype_app_id, R.string.multitype_pkg),
         MV(R.attr.key_mv, R.string.mv_title, R.string.mv_subtitle, R.string.mv_app_id, R.string.mv_pkg),
         GIV(R.attr.key_giv, R.string.giv_title, R.string.giv_subtitle, R.string.giv_app_id, R.string.giv_pkg),
         GRVA(R.attr.key_grva, R.string.grva_title, R.string.grva_subtitle, R.string.grva_app_id, R.string.grva_pkg),

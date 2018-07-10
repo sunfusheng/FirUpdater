@@ -1,9 +1,7 @@
 package com.sunfusheng.firupdater.sample;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 
-import com.sunfusheng.FirUpdaterUtils;
 import com.sunfusheng.GroupViewHolder;
 import com.sunfusheng.HeaderGroupRecyclerViewAdapter;
 
@@ -43,21 +41,8 @@ public class AppsAdapter extends HeaderGroupRecyclerViewAdapter<DataSource.AppCo
 
     @Override
     public void onBindChildViewHolder(GroupViewHolder holder, DataSource.AppConfig item, int groupPosition, int childPosition) {
-        Context context = holder.itemView.getContext();
-        Drawable icon = null;
-
-        if (FirUpdaterUtils.isAppInstalled(context, context.getString(item.pkgId))) {
-            icon = FirUpdaterUtils.getIcon(context, context.getString(item.pkgId));
-        }
-
-        if (icon == null) {
-            icon = context.getResources().getDrawable(R.mipmap.ic_launcher);
-        }
-
-        holder.setImageDrawable(R.id.iv_logo, icon);
         holder.setText(R.id.tv_title, item.titleId);
         holder.setText(R.id.tv_subtitle, item.subtitleId);
-
         holder.setVisible(R.id.divider, !isGroupLastItem(groupPosition, childPosition));
     }
 }

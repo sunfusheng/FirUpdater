@@ -44,4 +44,9 @@
     <string name="tuling_app_id">5704953c00fc74127000000a</string>
     <string name="tuling_pkg">com.robot.tuling</string>
 
+    <string name="multitype_title">MultiType</string>
+    <string name="multitype_subtitle">轻松地实现RecyclerView显示多种类型数据，一对多、多对多，可以注册全局类型、局部类型、默认类型</string>
+    <string name="multitype_app_id">5b3ec988548b7a3d7bd77c8f</string>
+    <string name="multitype_pkg">com.sunfusheng.multitype.sample</string>
+
 </resources>

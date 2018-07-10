@@ -19,7 +19,6 @@ public class FirUpdater {
     private String appVersionUrl;
     private String apkPath;
     private FirAppInfo.AppInfo appInfo;
-    private boolean isBackgroundDownload = false;
     private boolean forceShowDialog = false;
 
     private FirDialog firDialog;
@@ -94,7 +93,6 @@ public class FirUpdater {
                 apkPath = Environment.getExternalStorageDirectory() + File.separator;
             }
 
-
             appInfo.appId = appId;
             appInfo.apkName = apkName;
             appInfo.apkPath = apkPath;
@@ -119,7 +117,8 @@ public class FirUpdater {
 
             @Override
             public void onClickBackgroundDownload(DialogInterface dialog) {
-                isBackgroundDownload = true;
+                firNotification = new FirNotification().createBuilder(context, true);
+                firNotification.setContentTitle(appInfo.appName);
             }
 
             @Override
@@ -136,17 +135,14 @@ public class FirUpdater {
             return;
         }
 
-        firNotification = new FirNotification();
-        firNotification.createBuilder(context);
-        firNotification.setContentTitle("正在下载" + appInfo.appName);
-
+        firDialog.showDownloadDialog(context, 0);
         firDownloader = new FirDownloader(context.getApplicationContext(), appInfo);
         firDownloader.setOnDownLoadListener(new FirDownloader.OnDownLoadListener() {
             @Override
             public void onProgress(int progress) {
                 firDialog.showDownloadDialog(context, progress);
-                if (isBackgroundDownload) {
-                    firNotification.setContentText(progress + "%");
+                if (firNotification != null) {
+                    firNotification.setContentText("下载更新中..." + progress + "%");
                     firNotification.notifyNotification(progress);
                 }
             }
@@ -154,15 +150,23 @@ public class FirUpdater {
             @Override
             public void onSuccess() {
                 firDialog.dismissDownloadDialog();
-                if (isBackgroundDownload) {
+                if (firNotification != null) {
                     firNotification.cancel();
                 }
+                firNotification = new FirNotification().createBuilder(context, false);
+                firNotification.setContentIntent(FirUpdaterUtils.getInstallApkIntent(context, appInfo.apkLocalUrl));
+                firNotification.setContentTitle(appInfo.appName);
+                firNotification.setContentText("下载完成，点击安装");
+                firNotification.notifyNotification();
                 FirUpdaterUtils.installApk(context, appInfo.apkLocalUrl);
             }
 
             @Override
             public void onError() {
-
+                firDialog.dismissDownloadDialog();
+                if (firNotification != null) {
+                    firNotification.cancel();
+                }
             }
         });
         firDownloader.downloadApk();

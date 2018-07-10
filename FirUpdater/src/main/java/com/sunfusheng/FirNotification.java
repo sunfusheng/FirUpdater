@@ -29,7 +29,7 @@ public class FirNotification {
     private NotificationManager manager;
     private NotificationCompat.Builder builder;
 
-    public void createBuilder(Context context) {
+    public FirNotification createBuilder(Context context, boolean showProgress) {
         this.context = context;
         manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         builder = new NotificationCompat.Builder(context, CHANNEL_ID);
@@ -41,7 +41,9 @@ public class FirNotification {
         }
         builder.setAutoCancel(false);
         builder.setOngoing(true);
-        builder.setProgress(100, 0, false);
+        if (showProgress) {
+            builder.setProgress(100, 0, false);
+        }
         builder.setWhen(System.currentTimeMillis());
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 1, new Intent(), PendingIntent.FLAG_UPDATE_CURRENT);
         builder.setFullScreenIntent(pendingIntent, false);
@@ -54,6 +56,7 @@ public class FirNotification {
         if (SDK_INT >= O) {
             setupNotificationChannel("FirUpdater", manager, builder);
         }
+        return this;
     }
 
     @TargetApi(O)
@@ -89,7 +92,7 @@ public class FirNotification {
 
     public void notifyNotification(int progress) {
         builder.setProgress(100, progress, false);
-        manager.notify(NOTIFICATION_ID, builder.build());
+        notifyNotification();
     }
 
     public void notifyNotification() {

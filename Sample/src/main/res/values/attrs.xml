@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <attr name="key_multitype">key_multitype</attr>
     <attr name="key_grva">key_grva</attr>
     <attr name="key_360">key_360</attr>
     <attr name="key_giv">key_giv</attr>
