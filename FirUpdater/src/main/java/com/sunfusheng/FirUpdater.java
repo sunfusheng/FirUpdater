@@ -20,6 +20,7 @@ public class FirUpdater {
     private String apkPath;
     private FirAppInfo.AppInfo appInfo;
     private boolean forceShowDialog = false;
+    private boolean forceDownload = false;
 
     private FirDialog firDialog;
     private FirDownloader firDownloader;
@@ -55,6 +56,11 @@ public class FirUpdater {
         return this;
     }
 
+    public FirUpdater forceDownload(boolean forceDownload) {
+        this.forceDownload = forceDownload;
+        return this;
+    }
+
     public void checkVersion() {
         if (TextUtils.isEmpty(apiToken) || TextUtils.isEmpty(appId)) {
             Toast.makeText(context, "请设置 API TOKEN && APP ID", Toast.LENGTH_LONG).show();
@@ -76,7 +82,7 @@ public class FirUpdater {
 
             @Override
             public void onDenied() {
-                FirUpdaterUtils.loggerError("申请权限未通过");
+                Toast.makeText(context, "申请权限未通过", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -130,7 +136,7 @@ public class FirUpdater {
 
     private void downloadApk() {
         File apkFile = new File(appInfo.apkLocalUrl);
-        if (apkFile.exists()) {
+        if (!forceDownload && apkFile.exists()) {
             FirUpdaterUtils.installApk(context, appInfo.apkLocalUrl);
             return;
         }
