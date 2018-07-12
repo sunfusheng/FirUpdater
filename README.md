@@ -23,6 +23,10 @@ Fir.im通道APK更新器，使用简单，让自己的demo快速具备升级功�
 模块的 build.gradle 添加：
 
     compile 'com.sunfusheng:FirUpdater:<latest-version>'
+    
+Android 8.0以上需要添加权限
+
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES"/>
 
 <br/>
 
