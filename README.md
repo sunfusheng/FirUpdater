@@ -6,7 +6,7 @@ Fir.im通道APK更新器，使用简单，让自己的demo快速具备升级功�
 
 ### 应用截图
 
-<img src="/resources/res.png" >
+![](/resources/res.png)
 
 <br/>
 
