@@ -1,7 +1,5 @@
 package com.sunfusheng;
 
-import android.annotation.TargetApi;
-import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -13,27 +11,27 @@ import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 
 import static android.os.Build.VERSION.SDK_INT;
-import static android.os.Build.VERSION_CODES.O;
-import static android.support.v4.app.NotificationCompat.DEFAULT_LIGHTS;
 import static android.support.v4.app.NotificationCompat.VISIBILITY_PUBLIC;
 
 /**
  * @author sunfusheng on 2018/2/17.
  */
 public class FirNotification {
-
-    public static final String CHANNEL_ID = "FirNotification";
-    public static final int NOTIFICATION_ID = 1234;
+    private static int NOTIFICATION_ID = 1234;
+    private static String CHANNEL_ID = "FirNotification";
+    private static String CHANNEL_NAME = "FirUpdater";
+    private static int CHANNEL_SEQUENCE = 0;
+    private static String LAST_CHANNEL_ID = CHANNEL_ID;
 
     private Context context;
-    private NotificationManager manager;
+    private NotificationManager notificationManager;
     private NotificationCompat.Builder builder;
 
     public FirNotification createBuilder(Context context, boolean showProgress) {
         this.context = context;
-        manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        setChannel();
         builder = new NotificationCompat.Builder(context, CHANNEL_ID);
-        builder.setTicker("正在下载");
         builder.setSmallIcon(android.R.drawable.stat_sys_download);
         Drawable icon = FirUpdaterUtils.getIcon(context);
         if (icon != null && icon instanceof BitmapDrawable) {
@@ -49,23 +47,23 @@ public class FirNotification {
         builder.setFullScreenIntent(pendingIntent, false);
         builder.setVisibility(VISIBILITY_PUBLIC);
         builder.setContentIntent(pendingIntent);
-        builder.setDefaults(DEFAULT_LIGHTS);
-        if (SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            builder.setPriority(Notification.PRIORITY_HIGH);
-        }
-        if (SDK_INT >= O) {
-            setupNotificationChannel("FirUpdater", manager, builder);
-        }
+        builder.setVibrate(new long[]{0});
+        builder.setPriority(NotificationCompat.PRIORITY_LOW);
         return this;
     }
 
-    @TargetApi(O)
-    private static void setupNotificationChannel(String channelName, NotificationManager notificationManager, NotificationCompat.Builder builder) {
-        if (notificationManager.getNotificationChannel(CHANNEL_ID) == null) {
-            NotificationChannel notificationChannel = new NotificationChannel(CHANNEL_ID, channelName, NotificationManager.IMPORTANCE_DEFAULT);
+    private void setChannel() {
+        if (SDK_INT >= Build.VERSION_CODES.O) {
+            notificationManager.deleteNotificationChannel(LAST_CHANNEL_ID);
+            CHANNEL_SEQUENCE++;
+            CHANNEL_ID = CHANNEL_ID + CHANNEL_SEQUENCE;
+            CHANNEL_NAME = CHANNEL_NAME + CHANNEL_SEQUENCE;
+            LAST_CHANNEL_ID = CHANNEL_ID;
+            NotificationChannel notificationChannel = new NotificationChannel(CHANNEL_ID, CHANNEL_NAME, NotificationManager.IMPORTANCE_LOW);
+            notificationChannel.enableVibration(false);
+            notificationChannel.setVibrationPattern(new long[]{0});
             notificationManager.createNotificationChannel(notificationChannel);
         }
-        builder.setChannelId(CHANNEL_ID);
     }
 
     public void setContentTitle(String title) {
@@ -81,8 +79,8 @@ public class FirNotification {
     }
 
     public void cancel() {
-        manager.notify(NOTIFICATION_ID, builder.build());
-        manager.cancel(NOTIFICATION_ID);
+        notificationManager.notify(NOTIFICATION_ID, builder.build());
+        notificationManager.cancel(NOTIFICATION_ID);
     }
 
     public void setContentIntent(Intent intent) {
@@ -96,6 +94,6 @@ public class FirNotification {
     }
 
     public void notifyNotification() {
-        manager.notify(NOTIFICATION_ID, builder.build());
+        notificationManager.notify(NOTIFICATION_ID, builder.build());
     }
 }
