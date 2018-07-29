@@ -12,7 +12,6 @@ import java.io.File;
  * @author sunfusheng on 2018/2/17.
  */
 public class FirUpdater {
-
     private Context context;
     private String apiToken;
     private String appId;
