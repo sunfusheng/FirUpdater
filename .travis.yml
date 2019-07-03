@@ -7,9 +7,9 @@ android:
   - tools
   - platform-tools
   - tools
-  - build-tools-27.0.3
-  - android-27
-  - sys-img-armeabi-v7a-android-27
+  - build-tools-28.0.3
+  - android-28
+  - sys-img-armeabi-v7a-android-28
   - extra-android-support
   - extra-android-m2repository
   - extra-google-m2repository
@@ -46,16 +46,16 @@ deploy:
   provider: releases
   api_key:
     secure: OFuj/KAKzHLJ09FZkUKggwpKtXPXTpbrpGaSDE0osd/KM6zDy9kl7/NJRp/RgWMeiRQnWZY98lJatIbjTQ8mZBFJ0bpKuNaWf9+Kd61oPuNDaUoG02ogXi/zZLRRQszDMNNSZB4ND4Avv9DO6Tx30VCPN5lH9L2pR94GXf8CU47dicBBrVkZvVlXOWVsUke8nLdBN57F58bkXmRf2OHaHtIFPGLCr9AoSKzQxHVMeAcQB3Wf7ti/eP/0s1DLaHqjUcT145gIkftrKT38xllV/CH9p3S7lbx4SCsMiDbgTJLnGNf4Y/uulYFUuhePUHPfPQPGOs/u7jvDm3H91uKWRQSXBONeW2/sc96QHC0u0/S2IpPqTIayIaCCzELCWUgizV1PaNfIUret2rNz7crPMMjgO+V3qtpvv1NsIjmal6sTVhddMmuRUNkaxI2ZnX9otXPwXP7wMkTkL1L6bkmBwNDtgQzLK7BNKMhG6jTnq40A5XIVGN+0uS/Q7VwDhRSPeuerNpIBPF7fFTLV1LjVJvUZdb0tAo6BGjIcO9dJ4+X7d6ACB0cqQfIN7KGycWFSW1TFaBUj2voUhnzadcMsxvS27tquKQ1PHX7aqfUMwuBIunXmJs8xElv36CZUN2xcjs6DKiQ/cNC2R+vjioMWRlLXp2Glh5t23qPU9qTjLXo=
-  file: Sample/outputs/FirUpdater.apk
+  file: sample/release/FirUpdater.apk
   skip_cleanup: true
   on:
-    repo: sfsheng0322/FirUpdater
+    repo: sunfusheng/FirUpdater
     tags: true
     all_branches: true
 
 after_deploy:
 - "./gradlew clean build bintrayUpload -PbintrayUser=sfsheng0322 -PbintrayKey=$BINTRAY_TOKEN -PdryRun=false"
-- fir publish Sample/outputs/FirUpdater.apk -T $FIR_TOKEN -c "修复了一些问题，优化体验"
+- fir publish sample/release/FirUpdater.apk -T $FIR_TOKEN -c "修复了一些问题，优化体验"
 
 notifications:
   email:

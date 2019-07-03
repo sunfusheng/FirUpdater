@@ -62,7 +62,7 @@ Android 8.0以上需要添加权限
 
 <br/>
 
-### 打点赏给作者加点油^_^
+### 请作者喝杯咖啡^_^
 
 <img src="http://ourvm0t8d.bkt.clouddn.com/wx_shoukuanma.png" >
 
