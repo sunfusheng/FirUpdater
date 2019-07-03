@@ -1,10 +1,2 @@
-include ':Sample', ':FirUpdater'
-
-gradle.ext.compileSdkVersion = 27
-gradle.ext.buildToolsVersion = '27.1.1'
-gradle.ext.supportLibraryVersion = '27.1.1'
-
-gradle.ext.minSdkVersion = 14
-gradle.ext.targetSdkVersion = 27
-gradle.ext.versionCode = 12
-gradle.ext.versionName = '1.1.1'
+include ':firupdater',
+        ':sample'

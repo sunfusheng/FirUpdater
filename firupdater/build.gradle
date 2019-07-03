@@ -2,12 +2,12 @@ apply plugin: 'com.android.library'
 apply plugin: 'com.novoda.bintray-release'
 
 android {
-    compileSdkVersion gradle.compileSdkVersion
+    compileSdkVersion compile_sdk_version
     defaultConfig {
-        minSdkVersion gradle.minSdkVersion
-        targetSdkVersion gradle.targetSdkVersion
-        versionCode gradle.versionCode
-        versionName gradle.versionName
+        minSdkVersion min_sdk_version
+        targetSdkVersion target_sdk_version
+        versionCode version_code
+        versionName version_name
     }
 
     compileOptions {
@@ -28,14 +28,14 @@ android {
 }
 
 dependencies {
-    implementation 'com.android.support:appcompat-v7:' + gradle.supportLibraryVersion
+    implementation 'com.android.support:appcompat-v7:' + support_library_version
 }
 
 publish {
     userOrg = 'sfsheng0322'
     groupId = 'com.sunfusheng'
     artifactId = 'FirUpdater'
-    publishVersion = gradle.versionName
+    publishVersion = version_name
     desc = 'A updater of the fir.im'
-    website = 'https://github.com/sfsheng0322/FirUpdater'
+    website = 'https://github.com/sunfusheng/FirUpdater'
 }
