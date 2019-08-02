@@ -51,5 +51,5 @@ dependencies {
     implementation 'com.android.support:appcompat-v7:' + support_library_version
     implementation 'com.android.support:design:' + support_library_version
     implementation 'com.sunfusheng:GroupRecyclerViewAdapter:1.0.8'
-    implementation project(':firupdater')
+    implementation project(':updater')
 }
