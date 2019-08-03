@@ -27,12 +27,15 @@ android {
 }
 
 dependencies {
-    implementation 'com.android.support:appcompat-v7:' + support_library_version
+    api 'com.android.support:appcompat-v7:' + support_library_version
+
+    api 'com.squareup.okio:okio:1.17.4'
     api 'com.squareup.okhttp3:okhttp:3.12.3'
     api 'com.squareup.okhttp3:logging-interceptor:3.12.3'
     api 'com.squareup.retrofit2:retrofit:' + retrofit_version
     api 'com.squareup.retrofit2:converter-gson:' + retrofit_version
     api 'com.squareup.retrofit2:adapter-rxjava2:' + retrofit_version
+
     api 'io.reactivex.rxjava2:rxjava:2.2.10'
     api 'io.reactivex.rxjava2:rxandroid:2.1.1'
     api 'com.trello.rxlifecycle2:rxlifecycle:2.2.2'
