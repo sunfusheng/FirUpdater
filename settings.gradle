@@ -1,2 +1,2 @@
-include ':updater',
+include ':updater', ':updater_okhttp3123',
         ':sample'
