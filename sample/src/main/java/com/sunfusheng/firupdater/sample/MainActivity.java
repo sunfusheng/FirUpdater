@@ -46,6 +46,8 @@ public class MainActivity extends AppCompatActivity {
                     .checkVersion();
         });
 
+        com.sunfusheng.updater.okhttp.FirUpdater.test();
+
     }
 
 }
