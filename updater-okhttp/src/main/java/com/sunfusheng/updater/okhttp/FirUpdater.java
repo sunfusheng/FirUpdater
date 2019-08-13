@@ -12,9 +12,8 @@ import io.reactivex.schedulers.Schedulers;
  * @author by sunfusheng on 2019-08-07
  */
 public class FirUpdater {
-    private Context mContext;
     private volatile static FirUpdater mInstance;
-
+    private Context mContext;
     private String mApiToken;
     private String mAppId;
     private String mApkPath;
