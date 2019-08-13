@@ -19,11 +19,11 @@ public class MainActivity extends AppCompatActivity {
 
         setTitle(getString(R.string.app_name) + "（V" + FirUpdaterUtils.getVersionName(this) + "）");
 
-        firUpdater = new FirUpdater(this);
-
-        firUpdater.apiToken(DataSource.API_TOKEN)
-                .appId(DataSource.FIR_UPDATER_APP_ID)
-                .checkVersion();
+//        firUpdater = new FirUpdater(this);
+//
+//        firUpdater.apiToken(DataSource.API_TOKEN)
+//                .appId(DataSource.FIR_UPDATER_APP_ID)
+//                .checkVersion();
 
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -41,13 +41,15 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
 
-            firUpdater.appId(getString(config.appId))
-                    .forceShowDialog(true)
-                    .checkVersion();
+//            firUpdater.appId(getString(config.appId))
+//                    .forceShowDialog(true)
+//                    .checkVersion();
         });
 
-        com.sunfusheng.updater.okhttp.FirUpdater.test();
-
+        com.sunfusheng.updater.okhttp.FirUpdater.getInstance(this)
+                .apiToken(DataSource.API_TOKEN)
+                .appId(DataSource.FIR_UPDATER_APP_ID)
+                .showLog(true)
+                .checkVersion();
     }
-
 }
