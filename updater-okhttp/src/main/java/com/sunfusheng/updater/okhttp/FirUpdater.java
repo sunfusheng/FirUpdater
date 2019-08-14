@@ -1,11 +1,11 @@
 package com.sunfusheng.updater.okhttp;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.text.TextUtils;
 import android.widget.Toast;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
 /**
@@ -57,14 +57,13 @@ public class FirUpdater {
         return this;
     }
 
-    @SuppressLint("CheckResult")
     public void checkVersion() {
         if (TextUtils.isEmpty(mApiToken) || TextUtils.isEmpty(mAppId)) {
-            Toast.makeText(mContext, "请设置 ApiToken 和 AppId ", Toast.LENGTH_LONG).show();
+            Toast.makeText(mContext, "请设置 ApiToken 和 AppId.", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        UpdaterApi.getUpdaterService(mShowLog).fetchAppInfo(mAppId, mApiToken)
+        Disposable disposable = UpdaterApi.getUpdaterService(mShowLog).fetchAppInfo(mAppId, mApiToken)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(it -> {

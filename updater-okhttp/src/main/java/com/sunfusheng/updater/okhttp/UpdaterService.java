@@ -12,15 +12,17 @@ import retrofit2.http.Url;
  * @author by sunfusheng on 2019-08-13
  */
 interface UpdaterService {
+
     String BASE_URL = "http://api.fir.im/";
 
-    @GET("apps/latest/{appId}")
+    @GET("apps/latest/{app_id}")
     Observable<AppInfo> fetchAppInfo(
-            @Path("appId") String appId,
+            @Path("app_id") String appId,
             @Query("api_token") String apiToken
     );
 
     @Streaming
     @GET
-    Observable<ResponseBody> download(@Url String url);
+    Observable<ResponseBody> downloadFile(@Url String fileUrl);
+
 }
