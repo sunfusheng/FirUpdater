@@ -12,7 +12,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * @author by sunfusheng on 2019-08-13
  */
 class UpdaterApi {
-
     private static Retrofit mRetrofit;
 
     private static OkHttpClient newOkHttpClient() {

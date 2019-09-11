@@ -1,9 +1,7 @@
 package com.sunfusheng.updater.okhttp;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.ActivityManager;
-import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -12,10 +10,8 @@ import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.support.annotation.NonNull;
 import android.support.v4.content.FileProvider;
 
 import java.io.Closeable;
@@ -23,71 +19,12 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
-import java.util.Stack;
 
 /**
  * @author sunfusheng
  * @since 2019-08-14
  */
-public class UpdaterUtil {
-    private static Context mContext;
-    private static Stack<Activity> mActivityStack;
-
-    private static Application.ActivityLifecycleCallbacks activityLifecycleCallbacks = new Application.ActivityLifecycleCallbacks() {
-        @Override
-        public void onActivityCreated(Activity activity, Bundle bundle) {
-            if (mActivityStack != null) {
-                mActivityStack.push(activity);
-            }
-        }
-
-        @Override
-        public void onActivityStarted(Activity activity) {
-        }
-
-        @Override
-        public void onActivityResumed(Activity activity) {
-        }
-
-        @Override
-        public void onActivityPaused(Activity activity) {
-        }
-
-        @Override
-        public void onActivityStopped(Activity activity) {
-        }
-
-        @Override
-        public void onActivitySaveInstanceState(Activity activity, Bundle bundle) {
-        }
-
-        @Override
-        public void onActivityDestroyed(Activity activity) {
-            if (mActivityStack != null) {
-                mActivityStack.remove(activity);
-            }
-        }
-    };
-
-    public static void registerActivityLifecycleCallbacks(@NonNull Application application) {
-        mContext = application.getApplicationContext();
-        mActivityStack = new Stack<>();
-        application.registerActivityLifecycleCallbacks(activityLifecycleCallbacks);
-    }
-
-    public static Context getContext() {
-        if (mContext != null) {
-            return mContext;
-        }
-        throw new NullPointerException("mContext = null");
-    }
-
-    public static Activity getCurrentActivity() {
-        if (mActivityStack != null && !mActivityStack.isEmpty()) {
-            return mActivityStack.peek();
-        }
-        return null;
-    }
+class UpdaterUtil {
 
     public static String getPackageName(Context context) {
         return context.getPackageName();

@@ -19,16 +19,21 @@ import java.lang.reflect.Field;
  * @since 2019-09-11
  */
 class UpdaterDialog {
-
-    private ProgressDialog progressDialog;
-
+    private ProgressDialog mProgressDialog;
     private OnClickDownloadDialogListener onClickDownloadDialogListener;
 
     void showUpdateDialog(AppInfo appInfo) {
         Activity topActivity = SoulPermission.getInstance().getTopActivity();
         if (topActivity == null) {
-            Log.e("FirUpdater", "currentActivity = null");
+            Log.e("FirUpdater", "topActivity = null");
             return;
+        }
+
+        int remoteVersionCode = !TextUtils.isEmpty(appInfo.version) ? Integer.parseInt(appInfo.version) : 0;
+        int localVersionCode = UpdaterUtil.getVersionCode(topActivity);
+        if (remoteVersionCode <= localVersionCode) {
+            Log.d("FirUpdater", "当前已是最新版本");
+//            return;
         }
 
         StringBuilder msg = new StringBuilder();
@@ -71,37 +76,37 @@ class UpdaterDialog {
     }
 
     public void showDownloadDialog(Context context, int progress) {
-        if (progressDialog == null) {
-            progressDialog = new ProgressDialog(context);
-            progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-            progressDialog.setCancelable(false);
-            progressDialog.setCanceledOnTouchOutside(false);
-            progressDialog.setMax(100);
-            progressDialog.setTitle("正在下载");
-            progressDialog.setButton(DialogInterface.BUTTON_POSITIVE, "后台下载", (dialog, which) -> {
+        if (mProgressDialog == null) {
+            mProgressDialog = new ProgressDialog(context);
+            mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+            mProgressDialog.setCancelable(false);
+            mProgressDialog.setCanceledOnTouchOutside(false);
+            mProgressDialog.setMax(100);
+            mProgressDialog.setTitle("正在下载");
+            mProgressDialog.setButton(DialogInterface.BUTTON_POSITIVE, "后台下载", (dialog, which) -> {
                 if (onClickDownloadDialogListener != null) {
                     onClickDownloadDialogListener.onClickBackgroundDownload(dialog);
                 }
             });
-            progressDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "取消", (dialog, which) -> {
+            mProgressDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "取消", (dialog, which) -> {
                 if (onClickDownloadDialogListener != null) {
                     onClickDownloadDialogListener.onClickCancelDownload(dialog);
                 }
             });
-            progressDialog.show();
+            mProgressDialog.show();
 
-            progressDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.parseColor("#333333"));
-            progressDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.parseColor("#9a9a9a"));
+            mProgressDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.parseColor("#333333"));
+            mProgressDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.parseColor("#9a9a9a"));
         }
 
-        if (progressDialog.isShowing()) {
-            progressDialog.setProgress(progress);
+        if (mProgressDialog.isShowing()) {
+            mProgressDialog.setProgress(progress);
         }
     }
 
     public void dismissDownloadDialog() {
-        if (progressDialog != null && progressDialog.isShowing()) {
-            progressDialog.dismiss();
+        if (mProgressDialog != null && mProgressDialog.isShowing()) {
+            mProgressDialog.dismiss();
         }
     }
 
