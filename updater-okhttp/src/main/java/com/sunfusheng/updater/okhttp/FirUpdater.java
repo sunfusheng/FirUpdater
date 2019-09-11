@@ -17,7 +17,7 @@ public class FirUpdater {
     private String mApiToken;
     private String mAppId;
     private String mApkPath;
-    private boolean mShowLog;
+    private UpdaterDialog mUpdaterDialog;
 
     public static FirUpdater getInstance(Context context) {
         if (mInstance == null) {
@@ -52,22 +52,20 @@ public class FirUpdater {
         return this;
     }
 
-    public FirUpdater showLog(boolean showLog) {
-        this.mShowLog = showLog;
-        return this;
-    }
-
     public void checkVersion() {
         if (TextUtils.isEmpty(mApiToken) || TextUtils.isEmpty(mAppId)) {
             Toast.makeText(mContext, "请设置 ApiToken 和 AppId.", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        Disposable disposable = UpdaterApi.getUpdaterService(mShowLog).fetchAppInfo(mAppId, mApiToken)
+        Disposable disposable = UpdaterApi.getUpdaterService().fetchAppInfo(mAppId, mApiToken)
                 .subscribeOn(Schedulers.io())
+                .filter(it -> it != null && !TextUtils.isEmpty(it.installUrl))
+                .filter(it -> it.binary != null && it.binary.fsize > 0)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(it -> {
-
+                    mUpdaterDialog = new UpdaterDialog();
+                    mUpdaterDialog.showUpdateDialog(it);
                 }, Throwable::printStackTrace);
     }
 

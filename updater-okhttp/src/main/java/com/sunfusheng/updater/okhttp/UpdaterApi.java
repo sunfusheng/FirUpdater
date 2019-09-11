@@ -15,16 +15,12 @@ class UpdaterApi {
 
     private static Retrofit mRetrofit;
 
-    private static OkHttpClient newOkHttpClient(boolean showLog) {
+    private static OkHttpClient newOkHttpClient() {
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
                 .connectTimeout(60, TimeUnit.SECONDS)
                 .readTimeout(60, TimeUnit.SECONDS)
-                .writeTimeout(60, TimeUnit.SECONDS);
-
-        if (showLog) {
-            builder.addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY));
-        }
-
+                .writeTimeout(60, TimeUnit.SECONDS)
+                .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY));
         return builder.build();
     }
 
@@ -37,11 +33,10 @@ class UpdaterApi {
                 .build();
     }
 
-    static UpdaterService getUpdaterService(boolean showLog) {
+    static UpdaterService getUpdaterService() {
         if (mRetrofit == null) {
-            mRetrofit = newRetrofit(newOkHttpClient(showLog));
+            mRetrofit = newRetrofit(newOkHttpClient());
         }
-
         return mRetrofit.create(UpdaterService.class);
     }
 }
