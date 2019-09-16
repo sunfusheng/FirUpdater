@@ -2,6 +2,7 @@ package com.sunfusheng.updater.okhttp;
 
 import android.content.Context;
 import android.text.TextUtils;
+import android.util.Log;
 import android.widget.Toast;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -11,7 +12,8 @@ import io.reactivex.schedulers.Schedulers;
 /**
  * @author by sunfusheng on 2019-08-07
  */
-public class FirUpdater {
+public class FirUpdater implements UpdaterDialog.OnClickDownloadDialogListener {
+    private static final String TAG = FirUpdater.class.getCanonicalName();
     private volatile static FirUpdater mInstance;
     private Context mContext;
     private String mApiToken;
@@ -31,9 +33,6 @@ public class FirUpdater {
     }
 
     private FirUpdater(Context context) {
-        if (context == null) {
-            throw new NullPointerException("context = null");
-        }
         this.mContext = context.getApplicationContext();
     }
 
@@ -64,9 +63,36 @@ public class FirUpdater {
                 .filter(it -> it.binary != null && it.binary.fsize > 0)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(it -> {
-                    mUpdaterDialog = new UpdaterDialog();
-                    mUpdaterDialog.showUpdateDialog(it);
+                    Log.d(TAG, it.toString());
+                    int remoteVersionCode = !TextUtils.isEmpty(it.version) ? Integer.parseInt(it.version) : -1;
+                    int localVersionCode = UpdaterUtil.getVersionCode(mContext);
+                    if (remoteVersionCode > localVersionCode) {
+                        Log.d(TAG, "当前已是最新版本");
+                    } else {
+                        mUpdaterDialog = new UpdaterDialog();
+                        mUpdaterDialog.showUpdateDialog(it);
+                        mUpdaterDialog.setOnClickDownloadDialogListener(this);
+                    }
                 }, Throwable::printStackTrace);
     }
 
+    @Override
+    public void onClickDownload() {
+        if (mUpdaterDialog == null) {
+            Log.d(TAG, "mUpdaterDialog = null");
+            return;
+        }
+
+        mUpdaterDialog.showDownloadDialog(0);
+    }
+
+    @Override
+    public void onClickBackground() {
+
+    }
+
+    @Override
+    public void onClickCancel() {
+
+    }
 }

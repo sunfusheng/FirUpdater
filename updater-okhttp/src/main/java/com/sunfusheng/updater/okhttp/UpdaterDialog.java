@@ -2,7 +2,6 @@ package com.sunfusheng.updater.okhttp;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.support.v7.app.AlertDialog;
@@ -29,13 +28,6 @@ class UpdaterDialog {
             return;
         }
 
-        int remoteVersionCode = !TextUtils.isEmpty(appInfo.version) ? Integer.parseInt(appInfo.version) : 0;
-        int localVersionCode = UpdaterUtil.getVersionCode(topActivity);
-        if (remoteVersionCode <= localVersionCode) {
-            Log.d("FirUpdater", "当前已是最新版本");
-//            return;
-        }
-
         StringBuilder msg = new StringBuilder();
         msg.append("名称：").append(appInfo.name);
         msg.append("\n版本：").append("V" + appInfo.versionShort);
@@ -50,7 +42,7 @@ class UpdaterDialog {
                 .setMessage(msg)
                 .setPositiveButton("立即更新", (dialog, which) -> {
                     if (onClickDownloadDialogListener != null) {
-                        onClickDownloadDialogListener.onClickDownload(dialog);
+                        onClickDownloadDialogListener.onClickDownload();
                     }
                 })
                 .setNegativeButton("稍后", (dialog, which) -> {
@@ -75,9 +67,15 @@ class UpdaterDialog {
         }
     }
 
-    public void showDownloadDialog(Context context, int progress) {
+    void showDownloadDialog(int progress) {
+        Activity topActivity = SoulPermission.getInstance().getTopActivity();
+        if (topActivity == null) {
+            Log.e("FirUpdater", "topActivity = null");
+            return;
+        }
+
         if (mProgressDialog == null) {
-            mProgressDialog = new ProgressDialog(context);
+            mProgressDialog = new ProgressDialog(topActivity);
             mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
             mProgressDialog.setCancelable(false);
             mProgressDialog.setCanceledOnTouchOutside(false);
@@ -85,12 +83,12 @@ class UpdaterDialog {
             mProgressDialog.setTitle("正在下载");
             mProgressDialog.setButton(DialogInterface.BUTTON_POSITIVE, "后台下载", (dialog, which) -> {
                 if (onClickDownloadDialogListener != null) {
-                    onClickDownloadDialogListener.onClickBackgroundDownload(dialog);
+                    onClickDownloadDialogListener.onClickBackground();
                 }
             });
             mProgressDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "取消", (dialog, which) -> {
                 if (onClickDownloadDialogListener != null) {
-                    onClickDownloadDialogListener.onClickCancelDownload(dialog);
+                    onClickDownloadDialogListener.onClickCancel();
                 }
             });
             mProgressDialog.show();
@@ -104,21 +102,21 @@ class UpdaterDialog {
         }
     }
 
-    public void dismissDownloadDialog() {
+    void dismissDownloadDialog() {
         if (mProgressDialog != null && mProgressDialog.isShowing()) {
             mProgressDialog.dismiss();
         }
     }
 
-    public void setOnClickDownloadDialogListener(OnClickDownloadDialogListener onClickDownloadDialogListener) {
-        this.onClickDownloadDialogListener = onClickDownloadDialogListener;
+    void setOnClickDownloadDialogListener(OnClickDownloadDialogListener listener) {
+        this.onClickDownloadDialogListener = listener;
     }
 
-    public interface OnClickDownloadDialogListener {
-        void onClickDownload(DialogInterface dialog);
+    interface OnClickDownloadDialogListener {
+        void onClickDownload();
 
-        void onClickBackgroundDownload(DialogInterface dialog);
+        void onClickBackground();
 
-        void onClickCancelDownload(DialogInterface dialog);
+        void onClickCancel();
     }
 }

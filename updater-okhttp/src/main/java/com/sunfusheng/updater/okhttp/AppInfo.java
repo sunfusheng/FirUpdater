@@ -18,6 +18,13 @@ class AppInfo {
 
     public static class BinaryBean {
         public int fsize;
+
+        @Override
+        public String toString() {
+            return "BinaryBean{" +
+                    "fsize=" + fsize +
+                    '}';
+        }
     }
 
     @Override
@@ -29,9 +36,7 @@ class AppInfo {
                 ", updated_at=" + updated_at +
                 ", versionShort='" + versionShort + '\'' +
                 ", build='" + build + '\'' +
-                ", installUrl='" + installUrl + '\'' +
                 ", install_url='" + install_url + '\'' +
-                ", direct_install_url='" + direct_install_url + '\'' +
                 ", update_url='" + update_url + '\'' +
                 ", binary=" + binary +
                 '}';
