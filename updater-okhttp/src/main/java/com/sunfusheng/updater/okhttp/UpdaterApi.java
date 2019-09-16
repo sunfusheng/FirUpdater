@@ -1,7 +1,12 @@
 package com.sunfusheng.updater.okhttp;
 
+import com.sunfusheng.updater.okhttp.download.DownloadInterceptor;
+import com.sunfusheng.updater.okhttp.download.DownloadService;
+import com.sunfusheng.updater.okhttp.download.IDownloadListener;
+
 import java.util.concurrent.TimeUnit;
 
+import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
@@ -14,12 +19,18 @@ import retrofit2.converter.gson.GsonConverterFactory;
 class UpdaterApi {
     private static Retrofit mRetrofit;
 
-    private static OkHttpClient newOkHttpClient() {
+    private static OkHttpClient newOkHttpClient(Interceptor... interceptors) {
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
                 .connectTimeout(60, TimeUnit.SECONDS)
                 .readTimeout(60, TimeUnit.SECONDS)
                 .writeTimeout(60, TimeUnit.SECONDS)
-                .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BASIC));
+                .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY));
+
+        if (interceptors != null && interceptors.length > 0) {
+            for (Interceptor interceptor : interceptors) {
+                builder.addInterceptor(interceptor);
+            }
+        }
         return builder.build();
     }
 
@@ -37,5 +48,9 @@ class UpdaterApi {
             mRetrofit = newRetrofit(newOkHttpClient());
         }
         return mRetrofit.create(UpdaterService.class);
+    }
+
+    static DownloadService getDownloadService(IDownloadListener downloadListener) {
+        return newRetrofit(newOkHttpClient(new DownloadInterceptor(downloadListener))).create(DownloadService.class);
     }
 }

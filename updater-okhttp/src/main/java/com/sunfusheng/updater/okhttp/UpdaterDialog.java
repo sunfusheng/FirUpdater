@@ -67,7 +67,7 @@ class UpdaterDialog {
         }
     }
 
-    void showDownloadDialog(int progress) {
+    void showDownloadDialog() {
         Activity topActivity = SoulPermission.getInstance().getTopActivity();
         if (topActivity == null) {
             Log.e("FirUpdater", "topActivity = null");
@@ -91,13 +91,20 @@ class UpdaterDialog {
                     onClickDownloadDialogListener.onClickCancel();
                 }
             });
-            mProgressDialog.show();
 
-            mProgressDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.parseColor("#333333"));
-            mProgressDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.parseColor("#9a9a9a"));
         }
 
-        if (mProgressDialog.isShowing()) {
+        if (!mProgressDialog.isShowing()) {
+            mProgressDialog.setProgress(0);
+            mProgressDialog.show();
+        }
+
+        mProgressDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.parseColor("#333333"));
+        mProgressDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.parseColor("#9a9a9a"));
+    }
+
+    void setDownloadProgress(int progress) {
+        if (mProgressDialog != null && mProgressDialog.isShowing()) {
             mProgressDialog.setProgress(progress);
         }
     }

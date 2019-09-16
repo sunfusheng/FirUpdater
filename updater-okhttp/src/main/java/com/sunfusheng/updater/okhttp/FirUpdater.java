@@ -1,9 +1,14 @@
 package com.sunfusheng.updater.okhttp;
 
 import android.content.Context;
+import android.os.Environment;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
+
+import com.sunfusheng.updater.okhttp.download.IDownloadListener;
+
+import java.io.File;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -19,7 +24,9 @@ public class FirUpdater implements UpdaterDialog.OnClickDownloadDialogListener {
     private String mApiToken;
     private String mAppId;
     private String mApkPath;
-    private UpdaterDialog mUpdaterDialog;
+    private AppInfo mAppInfo;
+    private UpdaterDialog mDialog;
+    private UpdaterDownloader mDownloader;
 
     public static FirUpdater getInstance(Context context) {
         if (mInstance == null) {
@@ -63,27 +70,57 @@ public class FirUpdater implements UpdaterDialog.OnClickDownloadDialogListener {
                 .filter(it -> it.binary != null && it.binary.fsize > 0)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(it -> {
+                    mAppInfo = it;
                     Log.d(TAG, it.toString());
                     int remoteVersionCode = !TextUtils.isEmpty(it.version) ? Integer.parseInt(it.version) : -1;
                     int localVersionCode = UpdaterUtil.getVersionCode(mContext);
                     if (remoteVersionCode > localVersionCode) {
                         Log.d(TAG, "当前已是最新版本");
                     } else {
-                        mUpdaterDialog = new UpdaterDialog();
-                        mUpdaterDialog.showUpdateDialog(it);
-                        mUpdaterDialog.setOnClickDownloadDialogListener(this);
+                        mDialog = new UpdaterDialog();
+                        mDialog.showUpdateDialog(it);
+                        mDialog.setOnClickDownloadDialogListener(this);
                     }
                 }, Throwable::printStackTrace);
     }
 
     @Override
     public void onClickDownload() {
-        if (mUpdaterDialog == null) {
+        if (mDialog == null) {
             Log.d(TAG, "mUpdaterDialog = null");
             return;
         }
 
-        mUpdaterDialog.showDownloadDialog(0);
+        String apkName = mAppInfo.name + "-V" + mAppInfo.versionShort + ".apk";
+        if (TextUtils.isEmpty(mApkPath)) {
+            mApkPath = Environment.getExternalStorageDirectory() + File.separator;
+        }
+        String apkPathName = mApkPath + apkName;
+
+        mDialog.showDownloadDialog();
+        mDownloader = new UpdaterDownloader();
+        mDownloader.download(mAppInfo.install_url, apkPathName, new IDownloadListener() {
+            @Override
+            public void onStart() {
+            }
+
+            @Override
+            public void onSuccess(File file) {
+                mDialog.dismissDownloadDialog();
+                UpdaterUtil.installApk(mContext, apkPathName);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                mDialog.dismissDownloadDialog();
+                Toast.makeText(mContext, "下载失败，请稍后重试！", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onProgress(long bytesTransferred, long totalBytes, int percentage) {
+                mDialog.setDownloadProgress(percentage);
+            }
+        });
     }
 
     @Override
