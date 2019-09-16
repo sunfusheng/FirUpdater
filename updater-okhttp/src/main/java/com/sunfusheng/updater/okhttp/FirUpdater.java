@@ -26,7 +26,6 @@ public class FirUpdater implements UpdaterDialog.OnClickDownloadDialogListener {
     private String mApkPath;
     private AppInfo mAppInfo;
     private UpdaterDialog mDialog;
-    private UpdaterDownloader mDownloader;
 
     public static FirUpdater getInstance(Context context) {
         if (mInstance == null) {
@@ -98,8 +97,7 @@ public class FirUpdater implements UpdaterDialog.OnClickDownloadDialogListener {
         String apkPathName = mApkPath + apkName;
 
         mDialog.showDownloadDialog();
-        mDownloader = new UpdaterDownloader();
-        mDownloader.download(mAppInfo.install_url, apkPathName, new IDownloadListener() {
+        new UpdaterDownloader().download(mAppInfo.install_url, apkPathName, new IDownloadListener() {
             @Override
             public void onStart() {
             }
@@ -125,7 +123,7 @@ public class FirUpdater implements UpdaterDialog.OnClickDownloadDialogListener {
 
     @Override
     public void onClickBackground() {
-
+        mDialog.dismissDownloadDialog();
     }
 
     @Override
