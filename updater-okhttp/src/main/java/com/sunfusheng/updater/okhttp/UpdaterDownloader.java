@@ -27,6 +27,8 @@ class UpdaterDownloader {
             Manifest.permission.WRITE_EXTERNAL_STORAGE
     );
 
+    private DownloadProgressObserver mDownloadProgressObserver;
+
     void download(String url, String filePath, IDownloadListener downloadListener) {
         SoulPermission.getInstance().checkAndRequestPermissions(permissions, new CheckRequestPermissionsListener() {
             @Override
@@ -42,6 +44,7 @@ class UpdaterDownloader {
     }
 
     private void downloadInternal(String url, String filePath, IDownloadListener downloadListener) {
+        mDownloadProgressObserver = new DownloadProgressObserver(filePath, downloadListener);
         UpdaterApi.getDownloadService(downloadListener).download(url)
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
@@ -55,7 +58,13 @@ class UpdaterDownloader {
                 .map(ResponseBody::byteStream)
                 .doOnNext(inputStream -> writeFile(inputStream, filePath))
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new DownloadProgressObserver(filePath, downloadListener));
+                .subscribe(mDownloadProgressObserver);
+    }
+
+    void cancel() {
+        if (mDownloadProgressObserver != null) {
+            mDownloadProgressObserver.dispose();
+        }
     }
 
     private void writeFile(InputStream inputStream, String filePath) throws Exception {

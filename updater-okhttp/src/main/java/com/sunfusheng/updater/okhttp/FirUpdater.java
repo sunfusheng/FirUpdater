@@ -24,8 +24,11 @@ public class FirUpdater implements UpdaterDialog.OnClickDownloadDialogListener {
     private String mApiToken;
     private String mAppId;
     private String mApkPath;
+
+    private Disposable mFetchAppInfoDisposable;
     private AppInfo mAppInfo;
     private UpdaterDialog mDialog;
+    private UpdaterDownloader mDownloader;
 
     public static FirUpdater getInstance(Context context) {
         if (mInstance == null) {
@@ -63,7 +66,7 @@ public class FirUpdater implements UpdaterDialog.OnClickDownloadDialogListener {
             return;
         }
 
-        Disposable disposable = UpdaterApi.getUpdaterService().fetchAppInfo(mAppId, mApiToken)
+        mFetchAppInfoDisposable = UpdaterApi.getUpdaterService().fetchAppInfo(mAppId, mApiToken)
                 .subscribeOn(Schedulers.io())
                 .filter(it -> it != null && !TextUtils.isEmpty(it.installUrl))
                 .filter(it -> it.binary != null && it.binary.fsize > 0)
@@ -97,7 +100,8 @@ public class FirUpdater implements UpdaterDialog.OnClickDownloadDialogListener {
         String apkPathName = mApkPath + apkName;
 
         mDialog.showDownloadDialog();
-        new UpdaterDownloader().download(mAppInfo.install_url, apkPathName, new IDownloadListener() {
+        mDownloader = new UpdaterDownloader();
+        mDownloader.download(mAppInfo.install_url, apkPathName, new IDownloadListener() {
             @Override
             public void onStart() {
             }
@@ -128,6 +132,17 @@ public class FirUpdater implements UpdaterDialog.OnClickDownloadDialogListener {
 
     @Override
     public void onClickCancel() {
+        mDialog.dismissDownloadDialog();
+        mDownloader.cancel();
+    }
 
+    public void destroy() {
+        if (mFetchAppInfoDisposable != null && !mFetchAppInfoDisposable.isDisposed()) {
+            mFetchAppInfoDisposable.dispose();
+            mFetchAppInfoDisposable = null;
+        }
+        if (mDownloader != null) {
+            mDownloader.cancel();
+        }
     }
 }
