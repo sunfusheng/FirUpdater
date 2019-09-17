@@ -29,11 +29,11 @@ class UpdaterDownloader {
 
     private DownloadProgressObserver mDownloadProgressObserver;
 
-    void download(String url, String filePath, IDownloadListener downloadListener) {
+    void download(String url, String filePathName, IDownloadListener downloadListener) {
         SoulPermission.getInstance().checkAndRequestPermissions(permissions, new CheckRequestPermissionsListener() {
             @Override
             public void onAllPermissionOk(Permission[] allPermissions) {
-                downloadInternal(url, filePath, downloadListener);
+                downloadInternal(url, filePathName, downloadListener);
             }
 
             @Override
@@ -43,8 +43,8 @@ class UpdaterDownloader {
         });
     }
 
-    private void downloadInternal(String url, String filePath, IDownloadListener downloadListener) {
-        mDownloadProgressObserver = new DownloadProgressObserver(filePath, downloadListener);
+    private void downloadInternal(String url, String filePathName, IDownloadListener downloadListener) {
+        mDownloadProgressObserver = new DownloadProgressObserver(filePathName, downloadListener);
         UpdaterApi.getDownloadService(downloadListener).download(url)
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
@@ -56,7 +56,7 @@ class UpdaterDownloader {
                     }
                 })
                 .map(ResponseBody::byteStream)
-                .doOnNext(inputStream -> writeFile(inputStream, filePath))
+                .doOnNext(inputStream -> writeFile(inputStream, filePathName))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(mDownloadProgressObserver);
     }
@@ -67,8 +67,8 @@ class UpdaterDownloader {
         }
     }
 
-    private void writeFile(InputStream inputStream, String filePath) throws Exception {
-        File file = new File(filePath);
+    private void writeFile(InputStream inputStream, String filePathName) throws Exception {
+        File file = new File(filePathName);
         if (file.exists()) {
             file.delete();
         }

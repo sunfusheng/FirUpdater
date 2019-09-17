@@ -17,15 +17,15 @@ import io.reactivex.schedulers.Schedulers;
 /**
  * @author by sunfusheng on 2019-08-07
  */
-public class FirUpdater implements UpdaterDialog.OnClickDownloadDialogListener {
+public class FirUpdater {
     private static final String TAG = FirUpdater.class.getCanonicalName();
     private volatile static FirUpdater mInstance;
     private Context mContext;
     private String mApiToken;
     private String mAppId;
     private String mApkPath;
+    private String mApkName;
 
-    private Disposable mFetchAppInfoDisposable;
     private AppInfo mAppInfo;
     private UpdaterDialog mDialog;
     private UpdaterDownloader mDownloader;
@@ -60,13 +60,18 @@ public class FirUpdater implements UpdaterDialog.OnClickDownloadDialogListener {
         return this;
     }
 
+    public FirUpdater apkName(String apkName) {
+        this.mApkName = apkName;
+        return this;
+    }
+
     public void checkVersion() {
         if (TextUtils.isEmpty(mApiToken) || TextUtils.isEmpty(mAppId)) {
             Toast.makeText(mContext, "请设置 ApiToken 和 AppId.", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        mFetchAppInfoDisposable = UpdaterApi.getUpdaterService().fetchAppInfo(mAppId, mApiToken)
+        Disposable disposable = UpdaterApi.getUpdaterService().fetchAppInfo(mAppId, mApiToken)
                 .subscribeOn(Schedulers.io())
                 .filter(it -> it != null && !TextUtils.isEmpty(it.installUrl))
                 .filter(it -> it.binary != null && it.binary.fsize > 0)
@@ -81,23 +86,35 @@ public class FirUpdater implements UpdaterDialog.OnClickDownloadDialogListener {
                     } else {
                         mDialog = new UpdaterDialog();
                         mDialog.showUpdateDialog(it);
-                        mDialog.setOnClickDownloadDialogListener(this);
+                        mDialog.setOnClickDownloadDialogListener(new UpdaterDialog.OnClickDownloadDialogListener() {
+                            @Override
+                            public void onClickDownload() {
+                                download();
+                            }
+
+                            @Override
+                            public void onClickBackground() {
+                                mDialog.dismissDownloadDialog();
+                            }
+
+                            @Override
+                            public void onClickCancel() {
+                                mDialog.dismissDownloadDialog();
+                                mDownloader.cancel();
+                            }
+                        });
                     }
                 }, Throwable::printStackTrace);
     }
 
-    @Override
-    public void onClickDownload() {
-        if (mDialog == null) {
-            Log.d(TAG, "mUpdaterDialog = null");
-            return;
+    private void download() {
+        if (TextUtils.isEmpty(mApkName)) {
+            mApkName = mAppInfo.name + "-V" + mAppInfo.versionShort + ".apk";
         }
-
-        String apkName = mAppInfo.name + "-V" + mAppInfo.versionShort + ".apk";
         if (TextUtils.isEmpty(mApkPath)) {
             mApkPath = Environment.getExternalStorageDirectory() + File.separator;
         }
-        String apkPathName = mApkPath + apkName;
+        String apkPathName = mApkPath + mApkName;
 
         mDialog.showDownloadDialog();
         mDownloader = new UpdaterDownloader();
@@ -123,26 +140,5 @@ public class FirUpdater implements UpdaterDialog.OnClickDownloadDialogListener {
                 mDialog.setDownloadProgress(percentage);
             }
         });
-    }
-
-    @Override
-    public void onClickBackground() {
-        mDialog.dismissDownloadDialog();
-    }
-
-    @Override
-    public void onClickCancel() {
-        mDialog.dismissDownloadDialog();
-        mDownloader.cancel();
-    }
-
-    public void destroy() {
-        if (mFetchAppInfoDisposable != null && !mFetchAppInfoDisposable.isDisposed()) {
-            mFetchAppInfoDisposable.dispose();
-            mFetchAppInfoDisposable = null;
-        }
-        if (mDownloader != null) {
-            mDownloader.cancel();
-        }
     }
 }
