@@ -31,14 +31,10 @@ class UpdaterUtil {
     }
 
     public static String getName(Context context) {
-        return getName(context, getPackageName(context));
-    }
-
-    public static String getName(Context context, String packageName) {
         try {
             PackageManager pm = context.getPackageManager();
-            PackageInfo pi = pm.getPackageInfo(packageName, 0);
-            return pi == null ? null : pi.applicationInfo.loadLabel(pm).toString();
+            PackageInfo pi = pm.getPackageInfo(getPackageName(context), 0);
+            return pi.applicationInfo.loadLabel(pm).toString();
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
             return null;
@@ -46,14 +42,10 @@ class UpdaterUtil {
     }
 
     public static Drawable getIcon(Context context) {
-        return getIcon(context, getPackageName(context));
-    }
-
-    public static Drawable getIcon(Context context, String packageName) {
         try {
             PackageManager pm = context.getPackageManager();
-            PackageInfo pi = pm.getPackageInfo(packageName, 0);
-            return pi == null ? null : pi.applicationInfo.loadIcon(pm);
+            PackageInfo pi = pm.getPackageInfo(getPackageName(context), 0);
+            return pi.applicationInfo.loadIcon(pm);
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
             return null;

@@ -18,42 +18,40 @@ import static android.support.v4.app.NotificationCompat.VISIBILITY_PUBLIC;
  * @since 2019-09-19
  */
 class UpdaterNotification {
-    private static int NOTIFICATION_ID = 1234;
+    private static int NOTIFICATION_ID = 8888;
     private static String CHANNEL_ID = "UpdaterNotification";
     private static String CHANNEL_NAME = "FirUpdater";
     private static int CHANNEL_SEQUENCE = 0;
     private static String LAST_CHANNEL_ID = CHANNEL_ID;
 
-    private Context context;
-    private NotificationManager notificationManager;
-    private NotificationCompat.Builder builder;
+    private NotificationManager mNotificationManager;
+    private NotificationCompat.Builder mNotificationBuilder;
 
-    UpdaterNotification createProgressBuilder(Context context) {
-        this.context = context;
-        notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+    UpdaterNotification(Context context, String title) {
+        mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         setChannel();
-        builder = new NotificationCompat.Builder(context, CHANNEL_ID);
-        builder.setSmallIcon(android.R.drawable.stat_sys_download);
+        mNotificationBuilder = new NotificationCompat.Builder(context, CHANNEL_ID);
+        mNotificationBuilder.setContentTitle(title);
+        mNotificationBuilder.setSmallIcon(android.R.drawable.stat_sys_download);
         Drawable icon = UpdaterUtil.getIcon(context);
-        if (icon != null && icon instanceof BitmapDrawable) {
-            builder.setLargeIcon(((BitmapDrawable) icon).getBitmap());
+        if (icon instanceof BitmapDrawable) {
+            mNotificationBuilder.setLargeIcon(((BitmapDrawable) icon).getBitmap());
         }
-        builder.setAutoCancel(false);
-        builder.setOngoing(true);
-        builder.setProgress(100, 0, false);
-        builder.setWhen(System.currentTimeMillis());
+        mNotificationBuilder.setAutoCancel(false);
+        mNotificationBuilder.setOngoing(true);
+        mNotificationBuilder.setProgress(100, 0, false);
+        mNotificationBuilder.setWhen(System.currentTimeMillis());
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 1, new Intent(), PendingIntent.FLAG_UPDATE_CURRENT);
-        builder.setFullScreenIntent(pendingIntent, false);
-        builder.setVisibility(VISIBILITY_PUBLIC);
-        builder.setContentIntent(pendingIntent);
-        builder.setVibrate(new long[]{0});
-        builder.setPriority(NotificationCompat.PRIORITY_LOW);
-        return this;
+        mNotificationBuilder.setFullScreenIntent(pendingIntent, false);
+        mNotificationBuilder.setVisibility(VISIBILITY_PUBLIC);
+        mNotificationBuilder.setContentIntent(pendingIntent);
+        mNotificationBuilder.setVibrate(new long[]{0});
+        mNotificationBuilder.setPriority(NotificationCompat.PRIORITY_LOW);
     }
 
     private void setChannel() {
         if (SDK_INT >= Build.VERSION_CODES.O) {
-            notificationManager.deleteNotificationChannel(LAST_CHANNEL_ID);
+            mNotificationManager.deleteNotificationChannel(LAST_CHANNEL_ID);
             CHANNEL_SEQUENCE++;
             CHANNEL_ID = CHANNEL_ID + CHANNEL_SEQUENCE;
             CHANNEL_NAME = CHANNEL_NAME + CHANNEL_SEQUENCE;
@@ -61,34 +59,23 @@ class UpdaterNotification {
             NotificationChannel notificationChannel = new NotificationChannel(CHANNEL_ID, CHANNEL_NAME, NotificationManager.IMPORTANCE_LOW);
             notificationChannel.enableVibration(false);
             notificationChannel.setVibrationPattern(new long[]{0});
-            notificationManager.createNotificationChannel(notificationChannel);
+            mNotificationManager.createNotificationChannel(notificationChannel);
         }
     }
 
-    public void setContentTitle(String title) {
-        builder.setContentTitle(title);
+    void setProgress(int progress) {
+        mNotificationBuilder.setContentText("下载更新中..." + progress + "%");
+        mNotificationBuilder.setProgress(100, progress, false);
+        mNotificationManager.notify(NOTIFICATION_ID, mNotificationBuilder.build());
     }
 
-    public void setContentText(String text) {
-        builder.setContentText(text);
-    }
-
-    public void cancel() {
-        notificationManager.notify(NOTIFICATION_ID, builder.build());
-        notificationManager.cancel(NOTIFICATION_ID);
-    }
-
-    public void setContentIntent(Intent intent) {
+    void setContentIntent(Context context, Intent intent) {
         PendingIntent pIntent = PendingIntent.getActivity(context, 1, intent, 0);
-        builder.setContentIntent(pIntent);
+        mNotificationBuilder.setContentIntent(pIntent);
     }
 
-    public void notifyNotification(int progress) {
-        builder.setProgress(100, progress, false);
-        notifyNotification();
-    }
-
-    public void notifyNotification() {
-        notificationManager.notify(NOTIFICATION_ID, builder.build());
+    void cancel() {
+        mNotificationManager.notify(NOTIFICATION_ID, mNotificationBuilder.build());
+        mNotificationManager.cancel(NOTIFICATION_ID);
     }
 }

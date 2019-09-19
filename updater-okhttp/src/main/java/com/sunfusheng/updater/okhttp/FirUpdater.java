@@ -29,6 +29,7 @@ public class FirUpdater {
     private AppInfo mAppInfo;
     private UpdaterDialog mDialog;
     private UpdaterDownloader mDownloader;
+    private int mCurrProgress;
     private UpdaterNotification mNotification;
 
     public static FirUpdater getInstance(Context context) {
@@ -96,9 +97,8 @@ public class FirUpdater {
                             @Override
                             public void onClickBackground() {
                                 mDialog.dismissDownloadDialog();
-                                mNotification = new UpdaterNotification();
-                                mNotification.createProgressBuilder(mContext);
-                                mNotification.setContentTitle(mAppInfo.name);
+                                mNotification = new UpdaterNotification(mContext, mAppInfo.name);
+                                mNotification.setProgress(mCurrProgress);
                             }
 
                             @Override
@@ -129,10 +129,10 @@ public class FirUpdater {
 
             @Override
             public void onProgress(long bytesTransferred, long totalBytes, int percentage) {
+                mCurrProgress = percentage;
                 mDialog.setDownloadProgress(percentage);
                 if (mNotification != null) {
-                    mNotification.setContentText("下载更新中..." + percentage + "%");
-                    mNotification.notifyNotification(percentage);
+                    mNotification.setProgress(percentage);
                 }
             }
 
