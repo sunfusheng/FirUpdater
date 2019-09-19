@@ -29,6 +29,7 @@ public class FirUpdater {
     private AppInfo mAppInfo;
     private UpdaterDialog mDialog;
     private UpdaterDownloader mDownloader;
+    private UpdaterNotification mNotification;
 
     public static FirUpdater getInstance(Context context) {
         if (mInstance == null) {
@@ -95,6 +96,9 @@ public class FirUpdater {
                             @Override
                             public void onClickBackground() {
                                 mDialog.dismissDownloadDialog();
+                                mNotification = new UpdaterNotification();
+                                mNotification.createProgressBuilder(mContext);
+                                mNotification.setContentTitle(mAppInfo.name);
                             }
 
                             @Override
@@ -124,20 +128,30 @@ public class FirUpdater {
             }
 
             @Override
+            public void onProgress(long bytesTransferred, long totalBytes, int percentage) {
+                mDialog.setDownloadProgress(percentage);
+                if (mNotification != null) {
+                    mNotification.setContentText("下载更新中..." + percentage + "%");
+                    mNotification.notifyNotification(percentage);
+                }
+            }
+
+            @Override
             public void onSuccess(File file) {
                 mDialog.dismissDownloadDialog();
+                if (mNotification != null) {
+                    mNotification.cancel();
+                }
                 UpdaterUtil.installApk(mContext, apkPathName);
             }
 
             @Override
             public void onError(Throwable e) {
                 mDialog.dismissDownloadDialog();
+                if (mNotification != null) {
+                    mNotification.cancel();
+                }
                 Toast.makeText(mContext, "下载失败，请稍后重试！", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onProgress(long bytesTransferred, long totalBytes, int percentage) {
-                mDialog.setDownloadProgress(percentage);
             }
         });
     }
