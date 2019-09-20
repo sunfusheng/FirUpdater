@@ -1,4 +1,4 @@
-package com.sunfusheng.updater.okhttp;
+package com.sunfusheng;
 
 import android.Manifest;
 
@@ -6,8 +6,8 @@ import com.qw.soul.permission.SoulPermission;
 import com.qw.soul.permission.bean.Permission;
 import com.qw.soul.permission.bean.Permissions;
 import com.qw.soul.permission.callbcak.CheckRequestPermissionsListener;
-import com.sunfusheng.updater.okhttp.download.DownloadProgressObserver;
-import com.sunfusheng.updater.okhttp.download.IDownloadListener;
+import com.sunfusheng.download.DownloadProgressObserver;
+import com.sunfusheng.download.IDownloadListener;
 
 import java.io.File;
 import java.io.FileOutputStream;

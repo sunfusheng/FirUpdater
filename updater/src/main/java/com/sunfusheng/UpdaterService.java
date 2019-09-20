@@ -1,4 +1,4 @@
-package com.sunfusheng.updater.okhttp;
+package com.sunfusheng;
 
 import io.reactivex.Observable;
 import retrofit2.http.GET;

@@ -1,4 +1,4 @@
-package com.sunfusheng.updater.okhttp.download;
+package com.sunfusheng.download;
 
 import io.reactivex.Observable;
 import okhttp3.ResponseBody;

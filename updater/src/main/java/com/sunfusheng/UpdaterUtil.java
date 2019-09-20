@@ -1,4 +1,4 @@
-package com.sunfusheng.updater.okhttp;
+package com.sunfusheng;
 
 import android.annotation.SuppressLint;
 import android.app.ActivityManager;
@@ -24,7 +24,7 @@ import java.util.List;
  * @author sunfusheng
  * @since 2019-08-14
  */
-class UpdaterUtil {
+public class UpdaterUtil {
 
     public static String getPackageName(Context context) {
         return context.getPackageName();
@@ -148,7 +148,7 @@ class UpdaterUtil {
     }
 
     @SuppressLint("DefaultLocale")
-    public static String getMeasureSize(long byteCount) {
+    public static String getFileSizeDesc(long byteCount) {
         if (byteCount <= 0) {
             return "0B";
         } else if (byteCount < 1024) {

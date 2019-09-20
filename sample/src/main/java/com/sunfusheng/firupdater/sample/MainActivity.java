@@ -6,23 +6,21 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 import com.sunfusheng.FirUpdater;
-import com.sunfusheng.FirUpdaterUtils;
+import com.sunfusheng.UpdaterUtil;
 
 public class MainActivity extends AppCompatActivity {
-
-    private FirUpdater firUpdater;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_recycler_view);
 
-        setTitle(getString(R.string.app_name) + "（V" + FirUpdaterUtils.getVersionName(this) + "）");
+        setTitle(getString(R.string.app_name) + "（V" + UpdaterUtil.getVersionName(this) + "）");
 
-//        firUpdater = new FirUpdater(this);
-//        firUpdater.apiToken(DataSource.API_TOKEN)
-//                .appId(DataSource.FIR_UPDATER_APP_ID)
-//                .checkVersion();
+        FirUpdater.getInstance(this)
+                .apiToken(DataSource.API_TOKEN)
+                .appId(DataSource.FIR_UPDATER_APP_ID)
+                .checkVersion();
 
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -35,19 +33,17 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
 
-            if (FirUpdaterUtils.isAppInstalled(this, getString(config.pkgId))) {
-                FirUpdaterUtils.startApp(this, getString(config.pkgId));
+            if (UpdaterUtil.isAppInstalled(this, getString(config.pkgId))) {
+                UpdaterUtil.startApp(this, getString(config.pkgId));
                 return;
             }
 
-//            firUpdater.appId(getString(config.appId))
-//                    .forceShowDialog(true)
-//                    .checkVersion();
+            FirUpdater.getInstance(this)
+                    .apiToken(DataSource.API_TOKEN)
+                    .appId(getString(config.appId))
+                    .checkVersion();
         });
 
-        com.sunfusheng.updater.okhttp.FirUpdater.getInstance(this)
-                .apiToken(DataSource.API_TOKEN)
-                .appId(DataSource.FIR_UPDATER_APP_ID)
-                .checkVersion();
+
     }
 }

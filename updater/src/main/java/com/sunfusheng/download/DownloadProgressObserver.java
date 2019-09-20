@@ -1,4 +1,4 @@
-package com.sunfusheng.updater.okhttp.download;
+package com.sunfusheng.download;
 
 import android.os.Handler;
 import android.os.Looper;

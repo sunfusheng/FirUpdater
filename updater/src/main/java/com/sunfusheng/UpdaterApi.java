@@ -1,8 +1,8 @@
-package com.sunfusheng.updater.okhttp;
+package com.sunfusheng;
 
-import com.sunfusheng.updater.okhttp.download.DownloadInterceptor;
-import com.sunfusheng.updater.okhttp.download.DownloadService;
-import com.sunfusheng.updater.okhttp.download.IDownloadListener;
+import com.sunfusheng.download.DownloadInterceptor;
+import com.sunfusheng.download.DownloadService;
+import com.sunfusheng.download.IDownloadListener;
 
 import java.util.concurrent.TimeUnit;
 
@@ -24,7 +24,7 @@ class UpdaterApi {
                 .connectTimeout(60, TimeUnit.SECONDS)
                 .readTimeout(60, TimeUnit.SECONDS)
                 .writeTimeout(60, TimeUnit.SECONDS)
-                .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY));
+                .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BASIC));
 
         if (interceptors != null && interceptors.length > 0) {
             for (Interceptor interceptor : interceptors) {

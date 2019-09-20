@@ -53,5 +53,4 @@ dependencies {
     implementation 'com.sunfusheng:GroupRecyclerViewAdapter:1.0.8'
 
     implementation project(':updater')
-    implementation project(':updater-okhttp')
 }

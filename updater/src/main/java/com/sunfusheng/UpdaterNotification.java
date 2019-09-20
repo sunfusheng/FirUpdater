@@ -1,4 +1,4 @@
-package com.sunfusheng.updater.okhttp;
+package com.sunfusheng;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
