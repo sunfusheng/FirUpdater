@@ -32,21 +32,18 @@ Android 8.0以上需要添加权限
 
 ### 使用
 
-检查升级一行代码即可：
+1、检查升级一行代码即可：
 
-    new FirUpdater(context, YOUR_FIR_API_TOKEN, YOUR_FIR_APP_ID)
-        .apkPath(YOUR_APK_PATH)
-        .checkVersion();
-    
-你也可以这样设置：
-
-    new FirUpdater(context)
+    FirUpdater.getInstance(context)
         .apiToken(YOUR_FIR_API_TOKEN)
         .appId(YOUR_FIR_APP_ID)
         .apkPath(YOUR_APK_PATH)
+        .apkName(YOUR_APK_NAME)
         .checkVersion();
 
-如果不设置apkPath，默认下载到SDCard的根目录下  
+2、如果不设置apkPath，默认下载到SDCard的根目录下
+
+3、如果不设置apkName，默认名称为【appName-versionName】
 
 <br/>
 
