@@ -55,13 +55,13 @@ Android 8.0以上需要添加权限
 
 ### 个人微信公众号
 
-<img src="http://ourvm0t8d.bkt.clouddn.com/wx_gongzhonghao.png">
+<img src="http://sunfusheng.com/assets/wx_gongzhonghao.png">
 
 <br/>
 
 ### 请作者喝杯咖啡^_^
 
-<img src="http://ourvm0t8d.bkt.clouddn.com/wx_shoukuanma.png" >
+<img src="http://sunfusheng.com/assets/wx_shoukuanma.png" >
 
 <br/>
 
