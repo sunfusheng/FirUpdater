@@ -30,7 +30,7 @@ class UpdaterDialog {
 
         StringBuilder msg = new StringBuilder();
         msg.append("名称：").append(appInfo.name);
-        msg.append("\n版本：").append("V" + appInfo.versionShort);
+        msg.append("\n版本：V").append(appInfo.versionShort);
         msg.append("\n大小：").append(UpdaterUtil.getFileSizeDesc(appInfo.binary.fsize));
         if (!TextUtils.isEmpty(appInfo.changelog)) {
             msg.append("\n\n更新日志：").append(appInfo.changelog);
