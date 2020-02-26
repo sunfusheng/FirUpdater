@@ -4,10 +4,11 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.graphics.Color;
-import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AlertDialog;
 
 import com.qw.soul.permission.SoulPermission;
 

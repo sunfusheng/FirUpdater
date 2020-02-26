@@ -12,7 +12,8 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
-import android.support.v4.content.FileProvider;
+
+import androidx.core.content.FileProvider;
 
 import java.io.Closeable;
 import java.io.File;

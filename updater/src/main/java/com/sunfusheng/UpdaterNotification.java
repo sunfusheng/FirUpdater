@@ -8,10 +8,10 @@ import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
-import android.support.v4.app.NotificationCompat;
+
+import androidx.core.app.NotificationCompat;
 
 import static android.os.Build.VERSION.SDK_INT;
-import static android.support.v4.app.NotificationCompat.VISIBILITY_PUBLIC;
 
 /**
  * @author sunfusheng
@@ -43,7 +43,7 @@ class UpdaterNotification {
         mNotificationBuilder.setWhen(System.currentTimeMillis());
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 1, new Intent(), PendingIntent.FLAG_UPDATE_CURRENT);
         mNotificationBuilder.setFullScreenIntent(pendingIntent, false);
-        mNotificationBuilder.setVisibility(VISIBILITY_PUBLIC);
+        mNotificationBuilder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
         mNotificationBuilder.setContentIntent(pendingIntent);
         mNotificationBuilder.setVibrate(new long[]{0});
         mNotificationBuilder.setPriority(NotificationCompat.PRIORITY_LOW);
