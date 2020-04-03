@@ -25,6 +25,7 @@ public class FirUpdater {
     private String mAppId;
     private String mApkPath;
     private String mApkName;
+    private String mPackageName;
 
     private AppInfo mAppInfo;
     private UpdaterDialog mDialog;
@@ -67,6 +68,12 @@ public class FirUpdater {
         return this;
     }
 
+    @Deprecated
+    public FirUpdater packageName(String packageName) {
+        this.mPackageName = packageName;
+        return this;
+    }
+
     public void checkVersion() {
         if (TextUtils.isEmpty(mApiToken) || TextUtils.isEmpty(mAppId)) {
             Toast.makeText(mContext, "请设置 ApiToken 和 AppId.", Toast.LENGTH_SHORT).show();
@@ -82,7 +89,7 @@ public class FirUpdater {
                     mAppInfo = it;
                     Log.d(TAG, it.toString());
                     int remoteVersionCode = !TextUtils.isEmpty(it.version) ? Integer.parseInt(it.version) : -1;
-                    int localVersionCode = UpdaterUtil.getVersionCode(mContext);
+                    int localVersionCode = UpdaterUtil.getVersionCode(mContext, mPackageName);
                     if (remoteVersionCode <= localVersionCode) {
                         Log.d(TAG, "当前已是最新版本");
                         return;

@@ -6,8 +6,8 @@ buildscript {
         version_code = 14
         version_name = '1.3.0'
 
-        okhttp3_version = '4.0.1'
-        retrofit_version = '2.6.1'
+        okhttp3_version = '4.4.1'
+        retrofit_version = '2.8.1'
     }
 
     repositories {
@@ -16,8 +16,8 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.6.0'
-        classpath 'com.novoda:bintray-release:0.9.1'
+        classpath 'com.android.tools.build:gradle:3.6.2'
+        classpath 'com.novoda:bintray-release:0.9.2'
     }
 }
 

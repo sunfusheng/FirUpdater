@@ -12,6 +12,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.TextUtils;
 
 import androidx.core.content.FileProvider;
 
@@ -59,6 +60,7 @@ public class UpdaterUtil {
 
     public static int getVersionCode(Context context, String packageName) {
         try {
+            packageName = TextUtils.isEmpty(packageName) ? getPackageName(context) : packageName;
             PackageManager pm = context.getPackageManager();
             PackageInfo pi = pm.getPackageInfo(packageName, 0);
             return pi == null ? -1 : pi.versionCode;

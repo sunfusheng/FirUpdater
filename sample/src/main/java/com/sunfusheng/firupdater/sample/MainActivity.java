@@ -21,6 +21,7 @@ public class MainActivity extends AppCompatActivity {
         FirUpdater.getInstance(this)
                 .apiToken(DataSource.API_TOKEN)
                 .appId(DataSource.FIR_UPDATER_APP_ID)
+                .packageName(UpdaterUtil.getPackageName(this))
                 .checkVersion();
 
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
@@ -42,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
             FirUpdater.getInstance(this)
                     .apiToken(DataSource.API_TOKEN)
                     .appId(getString(config.appId))
+                    .packageName(getString(config.pkgId))
                     .checkVersion();
         });
 
